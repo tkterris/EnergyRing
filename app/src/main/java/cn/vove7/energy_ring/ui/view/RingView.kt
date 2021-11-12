@@ -27,7 +27,7 @@ class RingView @JvmOverloads constructor(
     var progress: Int = accuracy.toInt() / 2
 
     var mainColor = Color.GREEN
-    var bgColor = if (BuildConfig.DEBUG) Color.argb(10, 10, 10, 10) else Color.TRANSPARENT
+    var bgColor = Color.TRANSPARENT
 
     var doughnutColors = intArrayOf(
             Color.RED,
