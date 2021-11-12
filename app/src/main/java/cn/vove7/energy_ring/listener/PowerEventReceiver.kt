@@ -46,11 +46,15 @@ object PowerEventReceiver : BroadcastReceiver() {
                 Log.d("Debug :", "onReceive  ----> onCharging")
                 isCharging = true
                 FloatRingWindow.onCharging()
+                FloatRingWindow.onShapeTypeChanged()
+                FloatRingWindow.update(lastValue)
             }
             Intent.ACTION_POWER_DISCONNECTED -> {//断开
                 Log.d("Debug :", "onReceive  ----> onDisCharging")
                 isCharging = false
                 FloatRingWindow.onDisCharging()
+                FloatRingWindow.onShapeTypeChanged()
+                FloatRingWindow.update(lastValue)
             }
             Intent.ACTION_BATTERY_LOW -> {//低电量
             }

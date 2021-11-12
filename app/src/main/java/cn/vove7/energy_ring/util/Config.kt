@@ -45,7 +45,14 @@ object Config : BaseConfig {
     //省电模式自动隐藏
     var powerSaveHide by smartKey(false)
 
-    var colors by smartKey(
+    var colorsDischarging by smartKey(
+            intArrayOf(
+                    "#ff00e676".asColor,
+                    "#ff64dd17".asColor
+            )
+    )
+
+    var colorsCharging by smartKey(
             intArrayOf(
                     "#ff00e676".asColor,
                     "#ff64dd17".asColor
@@ -189,32 +196,34 @@ object Config : BaseConfig {
 //形状
 @Suppress("ArrayInDataClass")
 data class ConfigInfo(
-        @SerializedName("name", alternate = ["a"])
+    @SerializedName("name", alternate = ["a"])
         var name: String,
-        @SerializedName("model", alternate = ["b"])
+    @SerializedName("model", alternate = ["b"])
         val model: String,
-        @SerializedName("posxf", alternate = ["c"])
+    @SerializedName("posxf", alternate = ["c"])
         val posxf: Int,
-        @SerializedName("posyf", alternate = ["d"])
+    @SerializedName("posyf", alternate = ["d"])
         val posyf: Int,
-        @SerializedName("strokeWidth", alternate = ["strokeWith"])
+    @SerializedName("strokeWidth", alternate = ["strokeWith"])
         val strokeWidth: Float,
-        @SerializedName("sizef", alternate = ["e"])
+    @SerializedName("sizef", alternate = ["e"])
         val sizef: Float,
-        @SerializedName("energyType", alternate = ["f"])
+    @SerializedName("energyType", alternate = ["f"])
         val energyType: ShapeType? = ShapeType.RING,
-        @SerializedName("spacingWidth", alternate = ["g"])
+    @SerializedName("spacingWidth", alternate = ["g"])
         val spacingWidth: Int = -1,
-        @SerializedName("bgColor", alternate = ["h"])
+    @SerializedName("bgColor", alternate = ["h"])
         val bgColor: Int? = null,
-        @SerializedName("doubleRingChargingIndex", alternate = ["i"])
+    @SerializedName("doubleRingChargingIndex", alternate = ["i"])
         val doubleRingChargingIndex: Int = 0,
-        @SerializedName("secondaryRingFeature", alternate = ["j"])
+    @SerializedName("secondaryRingFeature", alternate = ["j"])
         val secondaryRingFeature: Int? = 0,
-        @SerializedName("colors", alternate = ["k"])
-        val colors: IntArray? = null,
-        @SerializedName("colorMode", alternate = ["l"])
-        val colorMode: Int = 0
+    @SerializedName("colors", alternate = ["k"])
+        val colorsDischarging: IntArray? = null,
+    @SerializedName("colorMode", alternate = ["l"])
+        val colorMode: Int = 0,
+    @SerializedName("colorsCharging", alternate = ["m"])
+        val colorsCharging: IntArray? = null
 ) {
     companion object {
         fun fromConfig(model: String): ConfigInfo {
@@ -222,7 +231,7 @@ data class ConfigInfo(
                     model, model, Config.posXf, Config.posYf, Config.strokeWidthF,
                     Config.sizef, Config.energyType,
                     Config.spacingWidthF, Config.ringBgColor, Config.doubleRingChargingIndex,
-                    Config.secondaryRingFeature, Config.colors, Config.colorMode
+                    Config.secondaryRingFeature, Config.colorsDischarging, Config.colorMode, Config.colorsCharging
             )
         }
     }
@@ -239,9 +248,15 @@ data class ConfigInfo(
         Config.strokeWidthF = this.strokeWidth
         Config.colorMode = this.colorMode
 
-        this.colors?.also {
+        this.colorsDischarging?.also {
             if (it.isNotEmpty()) {
-                Config.colors = it
+                Config.colorsDischarging = it
+            }
+        }
+
+        this.colorsCharging?.also {
+            if (it.isNotEmpty()) {
+                Config.colorsCharging = it
             }
         }
 

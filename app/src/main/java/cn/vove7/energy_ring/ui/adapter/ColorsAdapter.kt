@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import cn.vove7.energy_ring.R
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
-import cn.vove7.energy_ring.util.Config
 import cn.vove7.energy_ring.util.pickColor
 
 /**
@@ -22,7 +21,7 @@ import cn.vove7.energy_ring.util.pickColor
  * @author Vove
  * 2020/5/11
  */
-class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
+class ColorsAdapter(val getColors: () -> IntArray, val setColors: (IntArray) -> Unit) : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorViewHolder {
         val colorView = TextView(parent.context)
@@ -38,9 +37,9 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
 
     private val MAX_COLOR_COUNT = 10
 
-    private val hasPlus get() = Config.colors.size < MAX_COLOR_COUNT
+    private val hasPlus get() = getColors().size < MAX_COLOR_COUNT
 
-    override fun getItemCount(): Int = Config.colors.size + if (hasPlus) 1 else 0
+    override fun getItemCount(): Int = getColors().size + if (hasPlus) 1 else 0
 
     override fun onBindViewHolder(holder: ColorViewHolder, position: Int) {
         (holder.itemView as TextView).apply {
@@ -53,18 +52,18 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
                 background = ContextCompat.getDrawable(context, R.drawable.ic_add_circle)
             } else {
                 text = getRangeByPos(position).let { "${it.first}-${it.second}" }
-                setBackgroundColor(Config.colors[position])
+                setBackgroundColor(getColors()[position])
                 setOnClickListener {
                     pickColor(context, holder.adapterPosition)
                 }
                 setOnLongClickListener {
-                    val cs = Config.colors
+                    val cs = getColors()
                     if (cs.size <= 1) {
                         Toast.makeText(context, "最少设置一个颜色", Toast.LENGTH_SHORT).show()
                         return@setOnLongClickListener true
                     }
                     kotlin.runCatching {
-                        Config.colors = cs.toMutableList().apply { removeAt(position) }.toIntArray()
+                        setColors(cs.toMutableList().apply { removeAt(position) }.toIntArray())
                         notifyDataSetChanged()
                         FloatRingWindow.onShapeTypeChanged()
                     }
@@ -75,19 +74,19 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
     }
 
     private fun getRangeByPos(pos: Int): Pair<Int, Int> {
-        val len = Config.colors.size
+        val len = getColors().size
         val perf = 100f / len
 
         return (perf * pos).toInt() to (perf * (pos + 1)).toInt()
     }
 
     private fun pickColor(context: Context, pos: Int? = null) {
-        pickColor(context, initColor = pos?.let { Config.colors.getOrNull(it) }) { c ->
+        pickColor(context, initColor = pos?.let { getColors().getOrNull(it) }) { c ->
             if (pos == null) {
-                Config.colors = Config.colors.toMutableList().apply { add(c) }.toIntArray()
+                setColors(getColors().toMutableList().apply { add(c) }.toIntArray())
                 notifyDataSetChanged()
             } else {
-                Config.colors = Config.colors.also { it[pos] = c }
+                setColors(getColors().also { it[pos] = c })
                 notifyDataSetChanged()
             }
             FloatRingWindow.onShapeTypeChanged()
