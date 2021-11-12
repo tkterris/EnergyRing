@@ -82,7 +82,7 @@ class MessageHintSettingActivity : BaseActivity() {
             noAutoDismiss()
             positiveButton(text = "10s")
             getActionButton(WhichButton.POSITIVE).isEnabled = false
-            object : CountDownTimer(10000, 1000) {
+            object : CountDownTimer(1000, 100) {
                 override fun onFinish() {
                     getActionButton(WhichButton.POSITIVE).isEnabled = true
                     positiveButton(R.string.i_know) {
