@@ -42,7 +42,7 @@ class PillStyle : RotateAnimatorSupporter() {
             progress?.also {
                 this.progress = it
             }
-            mainColor = getColorByRange(this.progressf, Config.colors)
+            mainColor = getColorByRange(this.progressf, Config.colors, Config.colorsCharging)
             bgColor = Config.ringBgColor
 
             val h = Config.size

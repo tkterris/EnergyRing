@@ -52,6 +52,13 @@ object Config : BaseConfig {
             )
     )
 
+    var colorsCharging by smartKey(
+            intArrayOf(
+                    "#ff00e676".asColor,
+                    "#ff64dd17".asColor
+            )
+    )
+
     //0 纯色渐变 1 纯色 2 均匀渐变
     var colorMode by smartKey(0)
 
@@ -214,7 +221,9 @@ data class ConfigInfo(
         @SerializedName("colors", alternate = ["k"])
         val colors: IntArray? = null,
         @SerializedName("colorMode", alternate = ["l"])
-        val colorMode: Int = 0
+        val colorMode: Int = 0,
+        @SerializedName("colorsCharging", alternate = ["m"])
+        val colorsCharging: IntArray? = null
 ) {
     companion object {
         fun fromConfig(model: String): ConfigInfo {
@@ -222,7 +231,7 @@ data class ConfigInfo(
                     model, model, Config.posXf, Config.posYf, Config.strokeWidthF,
                     Config.sizef, Config.energyType,
                     Config.spacingWidthF, Config.ringBgColor, Config.doubleRingChargingIndex,
-                    Config.secondaryRingFeature, Config.colors, Config.colorMode
+                    Config.secondaryRingFeature, Config.colors, Config.colorMode, Config.colorsCharging
             )
         }
     }
@@ -242,6 +251,12 @@ data class ConfigInfo(
         this.colors?.also {
             if (it.isNotEmpty()) {
                 Config.colors = it
+            }
+        }
+
+        this.colorsCharging?.also {
+            if (it.isNotEmpty()) {
+                Config.colorsCharging = it
             }
         }
 

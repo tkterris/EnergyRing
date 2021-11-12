@@ -31,7 +31,8 @@ abstract class BaseStyleFragment : Fragment() {
 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        color_list.adapter = ColorsAdapter()
+        color_list.adapter = ColorsAdapter({ Config.colors }, { Config.colors = it })
+        color_list_charging.adapter = ColorsAdapter({ Config.colorsCharging }, { Config.colorsCharging = it })
         refreshData()
         listenSeekBar(view)
     }
@@ -46,6 +47,7 @@ abstract class BaseStyleFragment : Fragment() {
         bg_color_view?.setBackgroundColor(Config.ringBgColor)
         bg_color_view?.setTextColor(Config.ringBgColor.antiColor)
         color_list?.adapter?.notifyDataSetChanged()
+        color_list_charging?.adapter?.notifyDataSetChanged()
         strokeWidth_seek_bar?.progress = Config.strokeWidthF.toInt()
 
         posx_seek_bar?.progress = Config.posXf
