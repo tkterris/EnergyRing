@@ -27,7 +27,7 @@ object FullScreenListenerFloatWin {
 
             init {
                 if (BuildConfig.DEBUG) {
-                    setBackgroundColor(R.color.colorPrimary)
+                    //setBackgroundColor(R.color.colorPrimary)
                 }
             }
 
