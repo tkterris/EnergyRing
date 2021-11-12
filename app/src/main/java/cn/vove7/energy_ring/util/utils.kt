@@ -12,6 +12,7 @@ import android.util.Size
 import android.view.WindowManager
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.R
+import cn.vove7.energy_ring.listener.PowerEventReceiver
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
 import com.google.android.material.animation.ArgbEvaluatorCompat
@@ -142,7 +143,8 @@ val batteryLevel: Int
 
 val aev = ArgbEvaluatorCompat()
 
-fun getColorByRange(progress: Float, colors: IntArray): Int {
+fun getColorByRange(progress: Float, colorsDischarging: IntArray, colorsCharging: IntArray): Int {
+    val colors = getColorsToUse(colorsDischarging, colorsCharging)
     if (progress < 0) {
         return colors[0]
     }
@@ -155,6 +157,10 @@ fun getColorByRange(progress: Float, colors: IntArray): Int {
         }
     }
     return colors.last()
+}
+
+fun getColorsToUse(colorsDischarging: IntArray, colorsCharging: IntArray) : IntArray {
+    return if(PowerEventReceiver.isCharging) colorsCharging else colorsDischarging
 }
 
 fun <T> Iterable<T>.spliteBy(p: (T) -> Boolean): Pair<List<T>, List<T>> {

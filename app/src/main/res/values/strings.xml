@@ -30,6 +30,7 @@
     <string name="auto_hide_on_rotate">[screen orientation switch] auto hide</string>
     <string name="auto_hide_on_fullscreen">[full screen] auto hide</string>
     <string name="multi_color_setting">Color setting (long press to delete)</string>
+    <string name="multi_color_setting_charging">Color setting while charging (long press to delete)</string>
     <string name="single_color_setting">Color setting</string>
     <string name="ring_bg_color">Background color</string>
     <string name="rotate_speed_when_charging">Speed [when charging]</string>
