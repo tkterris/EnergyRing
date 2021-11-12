@@ -68,7 +68,7 @@ class DoubleRingStyle : RotateAnimatorSupporter(), MonitorListener {
             Log.d(TAG, "update monitor p ----> ${1 - Config.doubleRingChargingIndex} $ps")
             this.progress = ps
             lastMonitorValue = ps
-            mainColor = getColorByRange(this.progressf, Config.colors, Config.colorsCharging)
+            mainColor = getColorByRange(this.progressf, Config.colorsDischarging, Config.colorsCharging)
             invalidate()
         }
     }
@@ -91,9 +91,9 @@ class DoubleRingStyle : RotateAnimatorSupporter(), MonitorListener {
                     this.progress = lastMonitorValue
                 }
                 if (Config.colorMode == 2) {
-                    doughnutColors = Config.colors
+                    doughnutColors = Config.colorsDischarging
                 } else {
-                    mainColor = getColorByRange(this.progressf, Config.colors, Config.colorsCharging)
+                    mainColor = getColorByRange(this.progressf, Config.colorsDischarging, Config.colorsCharging)
                 }
                 bgColor = Config.ringBgColor
                 reSize(Config.size)

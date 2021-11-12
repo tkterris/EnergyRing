@@ -144,7 +144,7 @@ val batteryLevel: Int
 val aev = ArgbEvaluatorCompat()
 
 fun getColorByRange(progress: Float, colorsDischarging: IntArray, colorsCharging: IntArray): Int {
-    val colors = if(PowerEventReceiver.isCharging) colorsCharging else colorsDischarging
+    val colors = getColorsToUse(colorsDischarging, colorsCharging)
     if (progress < 0) {
         return colors[0]
     }
@@ -157,6 +157,10 @@ fun getColorByRange(progress: Float, colorsDischarging: IntArray, colorsCharging
         }
     }
     return colors.last()
+}
+
+fun getColorsToUse(colorsDischarging: IntArray, colorsCharging: IntArray) : IntArray {
+    return if(PowerEventReceiver.isCharging) colorsCharging else colorsDischarging
 }
 
 fun <T> Iterable<T>.spliteBy(p: (T) -> Boolean): Pair<List<T>, List<T>> {

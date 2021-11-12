@@ -31,7 +31,7 @@ abstract class BaseStyleFragment : Fragment() {
 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        color_list.adapter = ColorsAdapter({ Config.colors }, { Config.colors = it })
+        color_list.adapter = ColorsAdapter({ Config.colorsDischarging }, { Config.colorsDischarging = it })
         color_list_charging.adapter = ColorsAdapter({ Config.colorsCharging }, { Config.colorsCharging = it })
         refreshData()
         listenSeekBar(view)
