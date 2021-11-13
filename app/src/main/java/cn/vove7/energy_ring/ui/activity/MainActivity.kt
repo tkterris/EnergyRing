@@ -19,10 +19,7 @@ import cn.vove7.energy_ring.listener.NotificationListener
 import cn.vove7.energy_ring.listener.RotationListener
 import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.ui.adapter.StylePagerAdapter
-import cn.vove7.energy_ring.util.Config
-import cn.vove7.energy_ring.util.ConfigInfo
-import cn.vove7.energy_ring.util.DonateHelper
-import cn.vove7.energy_ring.util.openNotificationService
+import cn.vove7.energy_ring.util.*
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
@@ -45,6 +42,8 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        configAndStartForeground(this)
 
         setContentView(R.layout.activity_main)
 

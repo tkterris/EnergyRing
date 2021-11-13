@@ -8,6 +8,12 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import cn.vove7.energy_ring.R
+import cn.vove7.energy_ring.floatwindow.FloatRingWindow
+import cn.vove7.energy_ring.listener.PowerEventReceiver
+import cn.vove7.energy_ring.listener.PowerSaveModeListener
+import cn.vove7.energy_ring.listener.RotationListener
+import cn.vove7.energy_ring.listener.ScreenListener
+import cn.vove7.energy_ring.util.Config
 
 /**
  * # ForegroundService
@@ -19,9 +25,17 @@ class ForegroundService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        FloatRingWindow.start()
+        ScreenListener.start()
+        PowerEventReceiver.start()
+        if (Config.autoHideRotate) {
+            RotationListener.start()
+        }
+        PowerSaveModeListener.start(this)
+
         startForeground(1000, foreNotification)
+        return START_STICKY
     }
 
     private val channel
