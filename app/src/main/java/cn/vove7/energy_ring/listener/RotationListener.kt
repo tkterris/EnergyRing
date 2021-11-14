@@ -18,22 +18,19 @@ import cn.vove7.energy_ring.floatwindow.FullScreenListenerFloatWin
  * @author Vove
  * 2020/5/9
  */
-object RotationListener : BroadcastReceiver() {
+object RotationListener : EnergyRingBroadcastReceiver() {
 
     var enabled = false
-    fun start() {
+
+    override fun start() {
         val intentFilter = IntentFilter("android.intent.action.CONFIGURATION_CHANGED")
         App.INS.registerReceiver(this, intentFilter)
         enabled = true
     }
 
-    fun stop() {
+    override fun stop() {
         enabled = false
-        try {
-            App.INS.unregisterReceiver(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        super.stop()
     }
 
     var rotation = 0

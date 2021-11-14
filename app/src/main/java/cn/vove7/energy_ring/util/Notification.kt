@@ -18,12 +18,27 @@ import cn.vove7.energy_ring.service.ForegroundService
  * 2021-11-13
  */
 
-fun showServiceDestroyedNotification (context: Context) {
+const val FOREGROUND_NOTIFICATION_ID = 1000
+private const val DESTROY_NOTIFICATION_ID = 1001
+
+fun getAndShowForeNotification(context: Context): Notification {
     val notificationManager = context.getSystemService(NotificationManager::class.java)
-    notificationManager.notify(1001, getDestroyNotification(context))
+    notificationManager.cancel(DESTROY_NOTIFICATION_ID)
+
+    val notification = getForegroundNotification(context)
+
+    notificationManager.notify(FOREGROUND_NOTIFICATION_ID, notification)
+    return notification
 }
 
-fun getForeNotification(context: Context): Notification {
+fun getAndShowServiceDestroyedNotification (context: Context): Notification {
+    val notificationManager = context.getSystemService(NotificationManager::class.java)
+    val notification = getDestroyNotification(context)
+    notificationManager.notify(DESTROY_NOTIFICATION_ID, notification)
+    return notification
+}
+
+private fun getForegroundNotification(context: Context): Notification {
     return getBuilder(context, foregroundChannel).apply {
 //            addAction(0, "唤醒".spanColor(googleBlue), getPendingIntent(VoiceAssistActivity.WAKE_UP))
 //            addAction(0, "屏幕助手".spanColor(googleBlue), PendingIntent.getActivity(this@ForegroundService, 0, ScreenAssistActivity.createIntent(delayCapture = true), 0))
@@ -34,6 +49,16 @@ fun getForeNotification(context: Context): Notification {
         setContentTitle(context.getString(R.string.foreground_service_title))
     }.build()
 }
+
+private val foregroundChannel
+    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        NotificationChannel("foreground_service", "前台服务", NotificationManager.IMPORTANCE_MIN).apply {
+            setShowBadge(false)
+            setSound(null, null)
+            enableVibration(false)
+            enableLights(false)
+        }
+    } else null
 
 private fun getDestroyNotification(context: Context): Notification {
     //Create intent to launch foreground service
@@ -47,18 +72,9 @@ private fun getDestroyNotification(context: Context): Notification {
         setOngoing(false)
         setContentTitle(context.getString(R.string.destroyed_title))
         setContentIntent(pendingForegroundServiceIntent)
+        setAutoCancel(true)
     }.build()
 }
-
-private val foregroundChannel
-    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        NotificationChannel("foreground_service", "前台服务", NotificationManager.IMPORTANCE_MIN).apply {
-            setShowBadge(false)
-            setSound(null, null)
-            enableVibration(false)
-            enableLights(false)
-        }
-    } else null
 
 private val destroyedChannel
     get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

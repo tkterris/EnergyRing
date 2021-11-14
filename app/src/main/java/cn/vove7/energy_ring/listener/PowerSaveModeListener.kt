@@ -16,11 +16,11 @@ import cn.vove7.energy_ring.util.Config
  * @author Vove
  * 2020/9/8
  */
-object PowerSaveModeListener : BroadcastReceiver() {
+object PowerSaveModeListener : EnergyRingBroadcastReceiver() {
 
-    fun start(ctx: Context) {
+    override fun start() {
         val intentFilter = IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED)
-        ctx.registerReceiver(this, intentFilter)
+        App.INS.registerReceiver(this, intentFilter)
     }
 
     override fun onReceive(p0: Context?, p1: Intent?) {

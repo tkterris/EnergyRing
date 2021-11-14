@@ -15,9 +15,9 @@ import cn.vove7.energy_ring.ui.activity.MessageHintActivity
  * @author Vove
  * 2020/5/14
  */
-object ScreenListener : BroadcastReceiver() {
+object ScreenListener : EnergyRingBroadcastReceiver() {
 
-    fun start() {
+    override fun start()  {
         val intentFilter: IntentFilter = IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_OFF)
             addAction(Intent.ACTION_SCREEN_ON)

@@ -3,14 +3,16 @@ package cn.vove7.energy_ring.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.listener.PowerEventReceiver
 import cn.vove7.energy_ring.listener.PowerSaveModeListener
 import cn.vove7.energy_ring.listener.RotationListener
 import cn.vove7.energy_ring.listener.ScreenListener
 import cn.vove7.energy_ring.util.Config
-import cn.vove7.energy_ring.util.showServiceDestroyedNotification
-import cn.vove7.energy_ring.util.getForeNotification
+import cn.vove7.energy_ring.util.FOREGROUND_NOTIFICATION_ID
+import cn.vove7.energy_ring.util.getAndShowServiceDestroyedNotification
+import cn.vove7.energy_ring.util.getAndShowForeNotification
 
 /**
  * # ForegroundService
@@ -29,14 +31,22 @@ class ForegroundService : Service() {
         if (Config.autoHideRotate) {
             RotationListener.start()
         }
-        PowerSaveModeListener.start(this)
+        PowerSaveModeListener.start()
 
-        startForeground(1000, getForeNotification(this))
+        startForeground(FOREGROUND_NOTIFICATION_ID, getAndShowForeNotification(this))
+
         return START_STICKY
     }
 
     override fun onDestroy() {
-        showServiceDestroyedNotification(this)
+
+        FloatRingWindow.hide()
+        ScreenListener.stop()
+        PowerEventReceiver.stop()
+        RotationListener.stop()
+        PowerSaveModeListener.stop()
+
+        getAndShowServiceDestroyedNotification(this)
         super.onDestroy()
     }
 
