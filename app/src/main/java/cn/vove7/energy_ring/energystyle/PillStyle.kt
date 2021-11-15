@@ -35,14 +35,14 @@ class PillStyle : RotateAnimatorSupporter() {
         }
     }
 
-    override fun update(progress: Int?) {
+    override fun update(progress: Float?) {
         (displayView as PillView).apply {
             strokeWidthF = Config.strokeWidthF
 
             progress?.also {
                 this.progress = it
             }
-            mainColor = getColorByRange(this.progressf, Config.colorsDischarging, Config.colorsCharging)
+            mainColor = getColorByRange(this.progress)
             bgColor = Config.ringBgColor
 
             val h = Config.size

@@ -9,7 +9,7 @@ interface EnergyStyle {
 
     fun resumeAnimator()
 
-    fun update(progress: Int? = null)
+    fun update(progress: Float? = null)
 
     fun onRemove()
 

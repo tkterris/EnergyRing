@@ -39,7 +39,7 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
     var isCharging: Boolean = isOnCharging
     val powerSaveMode: Boolean get() = App.powerManager.isPowerSaveMode
 
-    private var lastValue = 0
+    private var lastValue = 0f
 
     override fun onReceive(context: Context?, intent: Intent?) {
         //打开充电自动开启唤醒
@@ -63,7 +63,7 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
             Intent.ACTION_BATTERY_CHANGED -> {
                 val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) //电量的刻度
                 val maxLevel = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1) //最大
-                val l = level * 1000 / maxLevel
+                val l = level.toFloat() / maxLevel.toFloat()
                 if (l != lastValue) {
                     lastValue = l
                     Log.d("Debug :", "onReceive  ----> ACTION_BATTERY_CHANGED $l")
@@ -73,7 +73,7 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
             }
             Intent.ACTION_BATTERY_OKAY -> {
                 Log.d("Debug :", "onReceive  ----> ACTION_BATTERY_OKAY")
-                FloatRingWindow.update(1000)
+                FloatRingWindow.update(1f)
             }
             PowerManager.ACTION_POWER_SAVE_MODE_CHANGED -> {
                 Log.d("Debug :", "onReceive  ----> ACTION_POWER_SAVE_MODE_CHANGED")

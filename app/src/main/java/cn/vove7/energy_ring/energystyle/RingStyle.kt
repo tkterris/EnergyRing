@@ -34,7 +34,7 @@ class RingStyle : EnergyStyle, RotateAnimatorSupporter() {
         }
     }
 
-    override fun update(progress: Int?) {
+    override fun update(progress: Float?) {
         (displayView as RingView).apply {
             strokeWidthF = Config.strokeWidthF
             if (progress != null) {
@@ -43,7 +43,7 @@ class RingStyle : EnergyStyle, RotateAnimatorSupporter() {
             if (Config.colorMode == 2) {
                 doughnutColors = Config.colorsDischarging
             } else {
-                mainColor = getColorByRange(this.progressf, Config.colorsDischarging, Config.colorsCharging)
+                mainColor = getColorByRange(this.progress)
             }
             bgColor = Config.ringBgColor
             reSize(Config.size)

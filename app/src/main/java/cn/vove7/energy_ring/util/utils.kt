@@ -6,6 +6,7 @@ import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.BatteryManager
+import android.os.Build
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
@@ -131,20 +132,20 @@ val isOnCharging: Boolean
         i
     }.invoke()
 
-val batteryLevel: Int
+val batteryLevel: Float
     get() {
         val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val intent = App.INS.registerReceiver(null, filter)
-            ?: return 50
+            ?: return 0.5f
         val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 100) //电量的刻度
         val maxLevel = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100) //最大
-        return level * 1000 / maxLevel
+        return level.toFloat() / maxLevel.toFloat()
     }
 
 val aev = ArgbEvaluatorCompat()
 
-fun getColorByRange(progress: Float, colorsDischarging: IntArray, colorsCharging: IntArray): Int {
-    val colors = getColorsToUse(colorsDischarging, colorsCharging)
+fun getColorByRange(progress: Float): Int {
+    val colors = getColorsToUse(Config.colorsDischarging, Config.colorsCharging)
     if (progress < 0) {
         return colors[0]
     }
@@ -178,5 +179,13 @@ fun inTimeRange(h: Int, b: Int, e: Int): Boolean {
         h in b..23 || h in 0 until e
     } else {
         h in b until e
+    }
+}
+
+fun isTransparent(color: Int): Boolean {
+    if (Build.VERSION.SDK_INT >= 26) {
+        return Color.valueOf(color).alpha().equals(0f)
+    } else {
+        return false
     }
 }
