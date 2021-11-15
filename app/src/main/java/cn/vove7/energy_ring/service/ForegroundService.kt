@@ -3,10 +3,8 @@ package cn.vove7.energy_ring.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.listener.PowerEventReceiver
-import cn.vove7.energy_ring.listener.PowerSaveModeListener
 import cn.vove7.energy_ring.listener.RotationListener
 import cn.vove7.energy_ring.listener.ScreenListener
 import cn.vove7.energy_ring.util.Config
@@ -31,7 +29,6 @@ class ForegroundService : Service() {
         if (Config.autoHideRotate) {
             RotationListener.start()
         }
-        PowerSaveModeListener.start()
 
         startForeground(FOREGROUND_NOTIFICATION_ID, getAndShowForeNotification(this))
 
@@ -44,7 +41,6 @@ class ForegroundService : Service() {
         ScreenListener.stop()
         PowerEventReceiver.stop()
         RotationListener.stop()
-        PowerSaveModeListener.stop()
 
         getAndShowServiceDestroyedNotification(this)
         super.onDestroy()
