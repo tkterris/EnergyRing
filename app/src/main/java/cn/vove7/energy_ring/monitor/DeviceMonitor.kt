@@ -16,5 +16,5 @@ interface DeviceMonitor {
 }
 
 interface MonitorListener {
-    fun onProgress(progress: Int)
+    fun onProgress(progress: Float)
 }

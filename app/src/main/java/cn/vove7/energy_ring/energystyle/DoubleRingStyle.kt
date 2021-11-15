@@ -61,14 +61,14 @@ class DoubleRingStyle : RotateAnimatorSupporter(), MonitorListener {
         }
     }
 
-    var lastMonitorValue: Int = 0
+    var lastMonitorValue: Float = 0f
 
-    override fun onProgress(ps: Int) {
+    override fun onProgress(ps: Float) {
         (if (Config.doubleRingChargingIndex == 0) ringView2 else ringView1).apply {
             Log.d(TAG, "update monitor p ----> ${1 - Config.doubleRingChargingIndex} $ps")
             this.progress = ps
             lastMonitorValue = ps
-            mainColor = getColorByRange(this.progressf, Config.colorsDischarging, Config.colorsCharging)
+            mainColor = getColorByRange(this.progress)
             invalidate()
         }
     }
@@ -79,7 +79,7 @@ class DoubleRingStyle : RotateAnimatorSupporter(), MonitorListener {
         }
     }
 
-    override fun update(progress: Int?) {
+    override fun update(progress: Float?) {
         arrayOf(ringView1, ringView2).forEachIndexed { index, it ->
             it.apply {
                 strokeWidthF = Config.strokeWidthF
@@ -93,7 +93,7 @@ class DoubleRingStyle : RotateAnimatorSupporter(), MonitorListener {
                 if (Config.colorMode == 2) {
                     doughnutColors = Config.colorsDischarging
                 } else {
-                    mainColor = getColorByRange(this.progressf, Config.colorsDischarging, Config.colorsCharging)
+                    mainColor = getColorByRange(this.progress)
                 }
                 bgColor = Config.ringBgColor
                 reSize(Config.size)

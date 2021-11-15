@@ -20,11 +20,7 @@ class RingView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    val accuracy = 1000f
-
-    val progressf get() = progress / accuracy
-
-    var progress: Int = accuracy.toInt() / 2
+    var progress: Float = 0.5f
 
     var mainColor = Color.GREEN
     var bgColor = if (BuildConfig.DEBUG) Color.argb(10, 10, 10, 10) else Color.TRANSPARENT
@@ -90,7 +86,7 @@ class RingView @JvmOverloads constructor(
         } else {
             paint.color = mainColor
         }
-        canvas.drawArc(rectF, 0f, 360f * progressf, false, paint)
+        canvas.drawArc(rectF, 0f, 360f * progress, false, paint)
     }
 
     fun reSize(size: Int) {

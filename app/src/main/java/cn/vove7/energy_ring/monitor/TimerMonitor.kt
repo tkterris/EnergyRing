@@ -20,7 +20,7 @@ abstract class TimerMonitor : DeviceMonitor, TimerTask() {
         }
     }
 
-    abstract fun getProgress(): Int
+    abstract fun getProgress(): Float
 
     abstract val period: Long
 

@@ -21,17 +21,11 @@ class PillView @JvmOverloads constructor(
 
     var bgColor: Int = 0
 
-    val accuracy = 1000f
-
-    val progressf get() = progress / accuracy
-
     var pillRotation: Float = 0f
 
-    var progress: Int = accuracy.toInt() / 2
+    var progress: Float = 0.5f
 
     var mainColor: Int = Color.RED
-
-    var process: Int = 50
 
     var strokeWidthF = 8f
 
@@ -50,7 +44,7 @@ class PillView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         canvas.translate((width / 2).toFloat(), (height / 2).toFloat())
         val strokeWidth = height / 2 * strokeWidthF / 100f + 1
-        val pf = progressf
+        val pf = progress
 
         val tw = width - strokeWidth
         val th = height - strokeWidth

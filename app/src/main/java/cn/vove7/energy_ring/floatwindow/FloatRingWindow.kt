@@ -23,6 +23,8 @@ import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.service.AccService
 import cn.vove7.energy_ring.util.Config
 import cn.vove7.energy_ring.util.batteryLevel
+import cn.vove7.energy_ring.util.getColorByRange
+import cn.vove7.energy_ring.util.isTransparent
 import cn.vove7.energy_ring.util.openFloatPermission
 import cn.vove7.energy_ring.util.weakLazy
 import java.lang.Thread.sleep
@@ -153,7 +155,7 @@ object FloatRingWindow {
         }
     }
 
-    fun update(p: Int? = null) {
+    fun update(p: Float? = null) {
         if (!isShowing) {
             return
         }
@@ -203,10 +205,13 @@ object FloatRingWindow {
         val cond2 = !Config.autoHideFullscreen || !FullScreenListenerFloatWin.isFullScreen
         val cond3 = !Config.powerSaveHide || !PowerEventReceiver.powerSaveMode
         val cond4 = !Config.screenOffHide || ScreenListener.screenOn
+        val fullyTransparent = isTransparent(Config.ringBgColor)
+                && isTransparent(getColorByRange(batteryLevel))
 
-        Log.d("Debug :", "canShow  ----> hasPermission: $cond0 旋转: $cond1 全屏: $cond2 省电: $cond3 screen on: $cond4")
+        Log.d("Debug :", "canShow  ----> hasPermission: $cond0 旋转: $cond1 全屏: $cond2 " +
+                "省电: $cond3 screen on: $cond4 transparent: $fullyTransparent")
 
-        return cond0 && cond1 && cond2 && cond3 && cond4
+        return cond0 && cond1 && cond2 && cond3 && cond4 && !fullyTransparent
 
     }
 
