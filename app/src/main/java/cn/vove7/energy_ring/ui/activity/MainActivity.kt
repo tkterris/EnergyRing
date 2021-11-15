@@ -103,6 +103,10 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
                 Config.powerSaveHide = !Config.powerSaveHide
                 item.isChecked = Config.powerSaveHide
             }
+            R.id.screen_off_auto_hide -> {
+                Config.screenOffHide = !Config.screenOffHide
+                item.isChecked = Config.screenOffHide
+            }
         }
         FloatRingWindow.onDeviceStateChange()
         return true
