@@ -2,6 +2,7 @@ package cn.vove7.energy_ring.service
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -19,6 +20,10 @@ class AccService : AccessibilityService() {
         var INS: AccService? = null
         val hasOpend get() = INS != null
         var wm: WindowManager? = null
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return START_STICKY
     }
 
     override fun onDestroy() {
