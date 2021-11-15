@@ -53,6 +53,7 @@
 	<string name="feature_of_secondary_ring">第二圓環功能：%s</string>
 	<string name="close">關閉</string>
 	<string name="foreground_service_title">Energy Ring前臺服務（可長按關閉通知）</string>
+	<string name="destroyed_title">Energy ring service has been stopped by OS, tap to restart</string>
 	<string name="color_mode">顏色模式</string>
 	<string name="not_support_current_mode">暫不支持當前形狀</string>
 	<string name="force_refresh">強制重繪</string>

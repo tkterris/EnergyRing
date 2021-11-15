@@ -1,7 +1,6 @@
 package cn.vove7.energy_ring.util
 
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,7 +8,6 @@ import android.provider.Settings
 import android.widget.Toast
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.R
-import cn.vove7.energy_ring.listener.NotificationListener
 
 
 /**
@@ -26,19 +24,6 @@ fun openFloatPermission() {
     intent.putComponent(App::class.java)
     App.INS.startActivity(intent)
 
-}
-
-fun Context.openNotificationService() {
-    try {
-        App.toast(R.string.please_open_notification_service)
-        val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.putComponent(NotificationListener::class.java)
-        startActivity(intent)
-    } catch (ex: Exception) {
-        App.toast(R.string.jump_failed_please_open_notification_service_by_manual)
-        ex.printStackTrace()
-    }
 }
 
 private fun Intent.putComponent(cls: Class<*>) {

@@ -28,10 +28,6 @@
         android:title="@string/force_refresh" />
 
     <item
-        android:id="@+id/menu_screen_off_remind"
-        android:title="@string/flash_light_on_screen_off" />
-
-    <item
         android:id="@+id/menu_about"
         android:icon="@drawable/ic_info"
         android:title="@string/about"

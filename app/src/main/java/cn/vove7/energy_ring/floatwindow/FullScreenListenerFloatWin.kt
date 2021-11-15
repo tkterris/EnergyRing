@@ -37,17 +37,7 @@ object FullScreenListenerFloatWin {
                 val ps = intArrayOf(0, 0)
                 getLocationOnScreen(ps)
                 isFullScreen = ps[1] == 0
-                if (!Config.autoHideFullscreen) {
-                    return
-                }
-                when {
-                    isFullScreen -> {//全屏
-                        FloatRingWindow.hide()
-                    }
-                    RotationListener.canShow -> {
-                        FloatRingWindow.show()
-                    }
-                }
+                FloatRingWindow.onDeviceStateChange()
             }
         }
     }

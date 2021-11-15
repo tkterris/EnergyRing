@@ -54,6 +54,7 @@
     <string name="feature_of_secondary_ring">The second ring function is %s</string>
     <string name="close">Close</string>
     <string name="foreground_service_title">Energy ring front desk service (long press to close notice)</string>
+    <string name="destroyed_title">Energy ring service has been stopped by OS, tap to restart</string>
     <string name="color_mode">Color mode</string>
     <string name="not_support_current_mode">The current shape is not supported at this time</string>
     <string name="force_refresh">Force refresh </string>

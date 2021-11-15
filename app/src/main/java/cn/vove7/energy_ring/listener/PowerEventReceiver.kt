@@ -16,14 +16,13 @@ import cn.vove7.energy_ring.util.isOnCharging
  * fixed 启动App时无法获得当前充电状态
  * @author Vove7
  */
-object PowerEventReceiver : BroadcastReceiver() {
+object PowerEventReceiver : EnergyRingBroadcastReceiver() {
 
     /**
      * 注册广播接收器
      */
-    fun start() {
-        val intent = App.INS.registerReceiver(this, intentFilter)
-        if (intent != null) onReceive(App.INS, intent)//注册时即通知
+    override fun start() {
+        App.INS.registerReceiver(this, intentFilter)
     }
 
     private val intentFilter: IntentFilter
@@ -46,14 +45,14 @@ object PowerEventReceiver : BroadcastReceiver() {
                 Log.d("Debug :", "onReceive  ----> onCharging")
                 isCharging = true
                 FloatRingWindow.onCharging()
-                FloatRingWindow.onShapeTypeChanged()
+                FloatRingWindow.onDeviceStateChange()
                 FloatRingWindow.update(lastValue)
             }
             Intent.ACTION_POWER_DISCONNECTED -> {//断开
                 Log.d("Debug :", "onReceive  ----> onDisCharging")
                 isCharging = false
                 FloatRingWindow.onDisCharging()
-                FloatRingWindow.onShapeTypeChanged()
+                FloatRingWindow.onDeviceStateChange()
                 FloatRingWindow.update(lastValue)
             }
             Intent.ACTION_BATTERY_LOW -> {//低电量
@@ -65,7 +64,7 @@ object PowerEventReceiver : BroadcastReceiver() {
                 if (l != lastValue) {
                     lastValue = l
                     Log.d("Debug :", "onReceive  ----> ACTION_BATTERY_CHANGED $l")
-                    FloatRingWindow.onShapeTypeChanged()
+                    FloatRingWindow.onDeviceStateChange()
                     FloatRingWindow.update(l)
                 }
             }
