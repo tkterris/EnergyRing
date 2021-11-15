@@ -173,24 +173,6 @@ object Config : BaseConfig {
 
     var localConfig by smartKey(arrayOf<ConfigInfo>())
 
-    val notifyApps by smartKeySet(
-            mutableSetOf(
-                    "com.tencent.mobileqq",
-                    "com.tencent.tim",
-                    "com.tencent.eim",
-                    "com.tencent.qqlite",
-                    "com.tencent.minihd.qq",
-                    "com.tencent.mobileqqi",
-                    "com.tencent.mm",
-                    "com.alibaba.android.rimet",
-                    "com.immomo.momo",
-                    "cn.soulapp.android",
-                    "im.yixin",
-                    "com.hpbr.bosszhipin",
-                    "com.eg.android.AlipayGphone"
-            )
-    )
-
 }
 
 //形状
