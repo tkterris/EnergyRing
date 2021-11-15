@@ -20,6 +20,12 @@
         android:id="@+id/auto_hide_in_power_save_mode"
         android:checkable="true"
         android:title="@string/auto_hide_in_power_saving_mode"/>
+
+    <item
+        android:id="@+id/screen_off_auto_hide"
+        android:checkable="true"
+        android:title="@string/auto_hide_on_screen_off" />
+
     <item
         android:id="@+id/menu_color_mode"
         android:title="@string/color_mode" />

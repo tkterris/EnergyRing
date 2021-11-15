@@ -16,14 +16,13 @@ import cn.vove7.smartkey.annotation.Config as SC
 @SC("app")
 object Config : BaseConfig {
 
-    var doNotDisturbRange by smartKey(0 to 7, key = "do_not_disturb_range")
-
     var energyType by smartKey(ShapeType.RING)
 
     val autoRotateDisCharging get() = defaultRotateDuration != 180000
 
     var autoHideRotate by smartKey(true)
     var autoHideFullscreen by smartKey(true)
+    var screenOffHide by smartKey(true)
 
     //充电旋转速度 跟随功率？
     var chargingRotateDuration by smartKey(3000)
@@ -83,9 +82,6 @@ object Config : BaseConfig {
         }
 
     var tipOfRecent by smartKey(true)
-
-
-    var notificationListenerEnabled by smartKey(false)
 
     val devicesWeakLazy = weakLazy {
         listOf(

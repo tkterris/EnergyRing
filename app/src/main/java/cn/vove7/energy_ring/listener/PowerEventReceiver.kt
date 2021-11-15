@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
+import android.os.PowerManager
 import android.util.Log
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
@@ -32,9 +33,11 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
             addAction(Intent.ACTION_BATTERY_LOW)
             addAction(Intent.ACTION_BATTERY_OKAY)
             addAction(Intent.ACTION_BATTERY_CHANGED)
+            addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED)
         }
 
     var isCharging: Boolean = isOnCharging
+    val powerSaveMode: Boolean get() = App.powerManager.isPowerSaveMode
 
     private var lastValue = 0
 
@@ -71,6 +74,10 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
             Intent.ACTION_BATTERY_OKAY -> {
                 Log.d("Debug :", "onReceive  ----> ACTION_BATTERY_OKAY")
                 FloatRingWindow.update(1000)
+            }
+            PowerManager.ACTION_POWER_SAVE_MODE_CHANGED -> {
+                Log.d("Debug :", "onReceive  ----> ACTION_POWER_SAVE_MODE_CHANGED")
+                FloatRingWindow.onDeviceStateChange()
             }
         }
 

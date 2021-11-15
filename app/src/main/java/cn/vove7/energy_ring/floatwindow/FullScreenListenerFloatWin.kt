@@ -8,9 +8,7 @@ import android.view.WindowManager
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.BuildConfig
 import cn.vove7.energy_ring.R
-import cn.vove7.energy_ring.listener.RotationListener
 import cn.vove7.energy_ring.service.AccService
-import cn.vove7.energy_ring.util.Config
 
 /**
  * # FullScreenListenerFloatWin

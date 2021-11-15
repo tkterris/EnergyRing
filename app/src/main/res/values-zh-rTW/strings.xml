@@ -28,6 +28,7 @@
 	<string name="alipay_is_not_installed">未安裝支付寶</string>
 	<string name="auto_hide_on_rotate">[荧幕方向切換]自動隱藏</string>
 	<string name="auto_hide_on_fullscreen">[全屏]自動隱藏</string>
+	<string name="auto_hide_on_screen_off">Hide when screen is off (accessibility service required to disable)</string>
 	<string name="multi_color_setting">顏色設定（長按删除）</string>
 	<string name="multi_color_setting_charging">Color setting while charging (long press to delete)</string>
 	<string name="single_color_setting">顏色設定</string>
