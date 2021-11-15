@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.util.Log
 import android.view.Surface
 import android.view.WindowManager
@@ -35,21 +36,15 @@ object RotationListener : EnergyRingBroadcastReceiver() {
 
     var rotation = 0
 
-    val canShow: Boolean get() = if (!enabled) true else (rotation == 0)
+    val canShow: Boolean get() = !enabled || (rotation == Surface.ROTATION_0)
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        val wm = App.INS.getSystemService(WindowManager::class.java)!!
-        val roa = wm.defaultDisplay.rotation
-        rotation = roa
-        Log.d("Debug :", "onReceive  ----> $roa")
-
-        if (roa == Surface.ROTATION_0 && !FullScreenListenerFloatWin.isFullScreen) {
-            Log.d("Debug :", "onReceive  ----> $roa show")
-            FloatRingWindow.show()
+        rotation = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            context?.display?.rotation ?: Surface.ROTATION_0
         } else {
-            Log.d("Debug :", "onReceive  ----> $roa hide")
-            FloatRingWindow.hide()
+            val wm = App.INS.getSystemService(WindowManager::class.java)!!
+            if (wm.defaultDisplay.rotation == 0) { Surface.ROTATION_0 } else { Surface.ROTATION_90 }
         }
-
+        FloatRingWindow.onDeviceStateChange()
     }
 }

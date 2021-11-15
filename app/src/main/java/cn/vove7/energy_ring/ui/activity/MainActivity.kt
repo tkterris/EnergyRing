@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.view.MenuItem
 import android.view.View
 import android.widget.ActionMenuView
@@ -15,7 +14,6 @@ import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.BuildConfig
 import cn.vove7.energy_ring.R
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
-import cn.vove7.energy_ring.listener.NotificationListener
 import cn.vove7.energy_ring.listener.RotationListener
 import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.ui.adapter.StylePagerAdapter
@@ -49,12 +47,6 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
 
         style_view_pager.adapter = pageAdapter
 
-        if (BuildConfig.DEBUG) {
-            view_info_view.setOnLongClickListener {
-                startActivity(Intent(this, MessageHintActivity::class.java))
-                true
-            }
-        }
         view_info_view.setOnClickListener(::outConfig)
         import_view.setOnClickListener(::importFromClip)
         initRadioStylesView()
@@ -68,17 +60,6 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         menu_view.menu.findItem(R.id.fullscreen_auto_hide).isChecked = Config.autoHideFullscreen
         menu_view.menu.findItem(R.id.auto_hide_in_power_save_mode).isChecked = Config.powerSaveHide
         refreshMenu()
-        checkNotificationService()
-    }
-
-    private fun checkNotificationService() {
-        Handler().postDelayed({
-            if (isFinishing) return@postDelayed
-
-            if (Config.notificationListenerEnabled && !NotificationListener.isConnect) {
-                openNotificationService()
-            }
-        }, 3000)
     }
 
     private fun initRadioStylesView() {
@@ -97,7 +78,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         val newStyle = ShapeType.values()[i]
         if (Config.energyType != newStyle) {
             Config.energyType = newStyle
-            FloatRingWindow.onShapeTypeChanged()
+            FloatRingWindow.onDeviceStateChange()
         }
         style_view_pager.currentItem = i
     }
@@ -108,8 +89,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
             R.id.menu_about -> showAbout()
             R.id.menu_color_mode -> pickColorMode()
             R.id.menu_model_preset -> pickPreSet()
-            R.id.menu_screen_off_remind -> startActivity(Intent(this, MessageHintSettingActivity::class.java))
-            R.id.menu_force_refresh -> FloatRingWindow.onShapeTypeChanged()
+            R.id.menu_force_refresh -> FloatRingWindow.onDeviceStateChange()
             R.id.fullscreen_auto_hide -> {
                 Config.autoHideFullscreen = !Config.autoHideFullscreen
                 item.isChecked = Config.autoHideFullscreen
@@ -126,13 +106,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
             R.id.auto_hide_in_power_save_mode -> {
                 Config.powerSaveHide = !Config.powerSaveHide
                 item.isChecked = Config.powerSaveHide
-                //省电中 开启
-                if (App.powerManager.isPowerSaveMode && Config.powerSaveHide) {
-                    FloatRingWindow.hide()
-                }
-                if (!Config.powerSaveHide) {
-                    FloatRingWindow.show()
-                }
+                FloatRingWindow.onDeviceStateChange()
             }
         }
         return true
@@ -266,7 +240,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         info.applyConfig()
         if (info.energyType != Config.energyType) {
             Config.energyType = info.energyType ?: ShapeType.RING
-            FloatRingWindow.onShapeTypeChanged()
+            FloatRingWindow.onDeviceStateChange()
         } else {
             FloatRingWindow.update()
         }

@@ -45,14 +45,14 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
                 Log.d("Debug :", "onReceive  ----> onCharging")
                 isCharging = true
                 FloatRingWindow.onCharging()
-                FloatRingWindow.onShapeTypeChanged()
+                FloatRingWindow.onDeviceStateChange()
                 FloatRingWindow.update(lastValue)
             }
             Intent.ACTION_POWER_DISCONNECTED -> {//断开
                 Log.d("Debug :", "onReceive  ----> onDisCharging")
                 isCharging = false
                 FloatRingWindow.onDisCharging()
-                FloatRingWindow.onShapeTypeChanged()
+                FloatRingWindow.onDeviceStateChange()
                 FloatRingWindow.update(lastValue)
             }
             Intent.ACTION_BATTERY_LOW -> {//低电量
@@ -64,7 +64,7 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
                 if (l != lastValue) {
                     lastValue = l
                     Log.d("Debug :", "onReceive  ----> ACTION_BATTERY_CHANGED $l")
-                    FloatRingWindow.onShapeTypeChanged()
+                    FloatRingWindow.onDeviceStateChange()
                     FloatRingWindow.update(l)
                 }
             }

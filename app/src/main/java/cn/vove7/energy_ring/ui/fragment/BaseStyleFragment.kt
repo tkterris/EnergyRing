@@ -69,7 +69,7 @@ abstract class BaseStyleFragment : Fragment() {
                 bg_color_view.setBackgroundColor(c)
                 bg_color_view.setTextColor(c.antiColor)
                 Config.ringBgColor = c
-                FloatRingWindow.onShapeTypeChanged()
+                FloatRingWindow.onDeviceStateChange()
             }
         }
         charging_rotateDuration_seek_bar?.onStop { progress ->

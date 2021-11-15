@@ -17,6 +17,7 @@ import cn.vove7.energy_ring.energystyle.EnergyStyle
 import cn.vove7.energy_ring.energystyle.PillStyle
 import cn.vove7.energy_ring.energystyle.RingStyle
 import cn.vove7.energy_ring.listener.RotationListener
+import cn.vove7.energy_ring.listener.ScreenListener
 import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.service.AccService
 import cn.vove7.energy_ring.util.Config
@@ -55,7 +56,7 @@ object FloatRingWindow {
 
     fun start() {
         if (hasPermission) {
-            showInternal()
+            show()
         } else {
             openFloatPermission()
             thread {
@@ -66,7 +67,7 @@ object FloatRingWindow {
                 Log.d("Debug :", "hasPermission")
                 if (hasPermission) {
                     Handler(Looper.getMainLooper()).post {
-                        showInternal()
+                        show()
                     }
                 }
             }
@@ -100,9 +101,14 @@ object FloatRingWindow {
         }
     }
 
-    fun onShapeTypeChanged() {
-        forceRefresh()
-        show()
+    fun onDeviceStateChange() {
+        val canShow = canShow()
+        if (canShow) {
+            forceRefresh()
+            show()
+        } else if (isShowing) {
+            hide()
+        }
     }
 
     fun forceRefresh() {
@@ -117,7 +123,7 @@ object FloatRingWindow {
         displayEnergyStyle.reloadAnimation()
     }
 
-    private fun showInternal() {
+    private fun show() {
         isShowing = true
         FullScreenListenerFloatWin.start()
         try {
@@ -162,7 +168,7 @@ object FloatRingWindow {
 
     fun checkValid(): Unit? {
         if (SystemClock.elapsedRealtime() - lastChange > periodRefreshView) {
-            onShapeTypeChanged()
+            onDeviceStateChange()
             return null
         }
         return Unit
@@ -190,33 +196,17 @@ object FloatRingWindow {
         displayEnergyStyle.onHide()
     }
 
-    fun pauseAnimator() {
-        displayEnergyStyle.pauseAnimator()
-    }
-
-    fun resumeAnimator() {
-        displayEnergyStyle.resumeAnimator()
-    }
-
-    fun canShow(): Boolean {
-        if (!hasPermission || isShowing) {
-            return false
-        }
-        val cond1 = Config.autoHideRotate && RotationListener.canShow
-        val cond2 = Config.autoHideFullscreen && !FullScreenListenerFloatWin.isFullScreen
+    private fun canShow(): Boolean {
+        val cond0 = hasPermission
+        val cond1 = !Config.autoHideRotate || RotationListener.canShow
+        val cond2 = !Config.autoHideFullscreen || !FullScreenListenerFloatWin.isFullScreen
         val cond3 = !Config.powerSaveHide || !App.powerManager.isPowerSaveMode
+        val cond4 = ScreenListener.screenOn
 
-        Log.d("Debug :", "canShow  ----> 旋转: $cond1 全屏: $cond2 省电: $cond3")
+        Log.d("Debug :", "canShow  ----> hasPermission: $cond0 旋转: $cond1 全屏: $cond2 省电: $cond3 screen on: $cond4")
 
-        return cond1 && cond2 && cond3
+        return cond0 && cond1 && cond2 && cond3 && cond4
 
-    }
-
-    fun show() {
-        if (!canShow()) {
-            return
-        }
-        showInternal()
     }
 
 }
