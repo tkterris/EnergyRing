@@ -199,10 +199,10 @@ object FloatRingWindow {
 
     private fun canShow(): Boolean {
         val cond0 = hasPermission
-        val cond1 = !Config.autoHideRotate || RotationListener.canShow
+        val cond1 = !Config.autoHideRotate || !RotationListener.isRotated
         val cond2 = !Config.autoHideFullscreen || !FullScreenListenerFloatWin.isFullScreen
         val cond3 = !Config.powerSaveHide || !PowerEventReceiver.powerSaveMode
-        val cond4 = ScreenListener.screenOn
+        val cond4 = !Config.screenOffHide || ScreenListener.screenOn
 
         Log.d("Debug :", "canShow  ----> hasPermission: $cond0 旋转: $cond1 全屏: $cond2 省电: $cond3 screen on: $cond4")
 

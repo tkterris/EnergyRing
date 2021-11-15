@@ -26,9 +26,7 @@ class ForegroundService : Service() {
         FloatRingWindow.start()
         ScreenListener.start()
         PowerEventReceiver.start()
-        if (Config.autoHideRotate) {
-            RotationListener.start()
-        }
+        RotationListener.start()
 
         startForeground(FOREGROUND_NOTIFICATION_ID, getAndShowForeNotification(this))
 

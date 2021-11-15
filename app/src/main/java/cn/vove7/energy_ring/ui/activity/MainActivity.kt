@@ -58,6 +58,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         menu_view.overflowIcon = getDrawable(R.drawable.ic_settings)
         menu_view.menu.findItem(R.id.rotate_auto_hide).isChecked = Config.autoHideRotate
         menu_view.menu.findItem(R.id.fullscreen_auto_hide).isChecked = Config.autoHideFullscreen
+        menu_view.menu.findItem(R.id.screen_off_auto_hide).isChecked = Config.screenOffHide
         menu_view.menu.findItem(R.id.auto_hide_in_power_save_mode).isChecked = Config.powerSaveHide
         refreshMenu()
     }
@@ -86,10 +87,10 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_about -> showAbout()
-            R.id.menu_color_mode -> pickColorMode()
-            R.id.menu_model_preset -> pickPreSet()
-            R.id.menu_force_refresh -> FloatRingWindow.onDeviceStateChange()
+            R.id.menu_about -> { showAbout(); return true }
+            R.id.menu_color_mode -> { pickColorMode(); return true }
+            R.id.menu_model_preset -> { pickPreSet(); return true }
+            R.id.menu_force_refresh -> null //do nothing, FloatRingWindow will be refreshed
             R.id.fullscreen_auto_hide -> {
                 Config.autoHideFullscreen = !Config.autoHideFullscreen
                 item.isChecked = Config.autoHideFullscreen
@@ -97,18 +98,13 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
             R.id.rotate_auto_hide -> {
                 Config.autoHideRotate = !Config.autoHideRotate
                 item.isChecked = Config.autoHideRotate
-                if (item.isChecked && !RotationListener.enabled) {
-                    RotationListener.start()
-                } else {
-                    RotationListener.stop()
-                }
             }
             R.id.auto_hide_in_power_save_mode -> {
                 Config.powerSaveHide = !Config.powerSaveHide
                 item.isChecked = Config.powerSaveHide
-                FloatRingWindow.onDeviceStateChange()
             }
         }
+        FloatRingWindow.onDeviceStateChange()
         return true
     }
 
