@@ -21,6 +21,7 @@ import cn.vove7.energy_ring.listener.RotationListener
 import cn.vove7.energy_ring.listener.ScreenListener
 import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.service.AccService
+import cn.vove7.energy_ring.service.ForegroundService
 import cn.vove7.energy_ring.util.Config
 import cn.vove7.energy_ring.util.batteryLevel
 import cn.vove7.energy_ring.util.getColorByRange
@@ -208,7 +209,7 @@ object FloatRingWindow {
         Log.d("Debug :", "canShow  ----> hasPermission: $cond0 旋转: $cond1 " +
                 "省电: $cond3 screen on: $cond4 transparent: $fullyTransparent")
 
-        return cond0 && cond1 && cond3 && cond4 && !fullyTransparent
+        return cond0 && cond1 && cond3 && cond4 && !fullyTransparent && ForegroundService.running
 
     }
 
