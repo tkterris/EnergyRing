@@ -7,7 +7,6 @@ import android.os.Handler
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
-import cn.vove7.energy_ring.floatwindow.FullScreenListenerFloatWin
 
 /**
  * # AccService
@@ -31,7 +30,6 @@ class AccService : AccessibilityService() {
         wm = null
         super.onDestroy()
         FloatRingWindow.reload()
-        FullScreenListenerFloatWin.reload()
     }
 
 
@@ -41,7 +39,6 @@ class AccService : AccessibilityService() {
         Handler().postDelayed({
             wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
             FloatRingWindow.reload()
-            FullScreenListenerFloatWin.reload()
         }, 1000)
     }
 
