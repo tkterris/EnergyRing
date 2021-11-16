@@ -105,9 +105,8 @@ object FloatRingWindow {
     }
 
     fun onDeviceStateChange() {
-        val canShow = canShow()
-        if (canShow) {
-            forceRefresh()
+        forceRefresh()
+        if (canShow()) {
             show()
         } else if (isShowing) {
             hide()
@@ -142,14 +141,14 @@ object FloatRingWindow {
     }
 
     fun reload() {
-        if (isShowing) {
-            try {
-                bodyView.tag = false
-                isShowing = false
-                wm.removeViewImmediate(bodyView)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        try {
+            bodyView.tag = false
+            isShowing = false
+            wm.removeViewImmediate(bodyView)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        if (canShow()) {
             show()
         }
     }
