@@ -41,8 +41,6 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        configAndStartForeground(this)
-
         setContentView(R.layout.activity_main)
 
         style_view_pager.adapter = pageAdapter

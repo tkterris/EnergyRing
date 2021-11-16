@@ -7,6 +7,7 @@ import android.os.PowerManager
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.StringRes
+import cn.vove7.energy_ring.util.configAndStartForeground
 
 /**
  * Created by 11324 on 2020/5/8
@@ -37,6 +38,7 @@ class App : Application() {
 
     override fun onCreate() {
         INS = this
+        configAndStartForeground(this)
         super.onCreate()
 
     }
