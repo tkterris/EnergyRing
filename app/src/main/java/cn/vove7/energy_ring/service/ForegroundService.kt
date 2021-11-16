@@ -20,9 +20,15 @@ import cn.vove7.energy_ring.util.getAndShowForeNotification
  */
 class ForegroundService : Service() {
 
+    companion object {
+        var running : Boolean = false
+    }
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        running = true
+
         FloatRingWindow.start()
         ScreenListener.start()
         PowerEventReceiver.start()
@@ -34,6 +40,7 @@ class ForegroundService : Service() {
     }
 
     override fun onDestroy() {
+        running = false
 
         FloatRingWindow.hide()
         ScreenListener.stop()
