@@ -128,7 +128,6 @@ object FloatRingWindow {
 
     private fun show() {
         isShowing = true
-        FullScreenListenerFloatWin.start()
         try {
             bodyView.visibility = View.VISIBLE
             displayEnergyStyle.update(batteryLevel)
@@ -202,16 +201,15 @@ object FloatRingWindow {
     private fun canShow(): Boolean {
         val cond0 = hasPermission
         val cond1 = !Config.autoHideRotate || !RotationListener.isRotated
-        val cond2 = !Config.autoHideFullscreen || !FullScreenListenerFloatWin.isFullScreen
         val cond3 = !Config.powerSaveHide || !PowerEventReceiver.powerSaveMode
         val cond4 = !Config.screenOffHide || ScreenListener.screenOn
         val fullyTransparent = isTransparent(Config.ringBgColor)
                 && isTransparent(getColorByRange(batteryLevel))
 
-        Log.d("Debug :", "canShow  ----> hasPermission: $cond0 旋转: $cond1 全屏: $cond2 " +
+        Log.d("Debug :", "canShow  ----> hasPermission: $cond0 旋转: $cond1 " +
                 "省电: $cond3 screen on: $cond4 transparent: $fullyTransparent")
 
-        return cond0 && cond1 && cond2 && cond3 && cond4 && !fullyTransparent
+        return cond0 && cond1 && cond3 && cond4 && !fullyTransparent
 
     }
 

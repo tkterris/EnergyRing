@@ -13,10 +13,6 @@
         android:title="@string/auto_hide_on_rotate" />
 
     <item
-        android:id="@+id/fullscreen_auto_hide"
-        android:checkable="true"
-        android:title="@string/auto_hide_on_fullscreen" />
-    <item
         android:id="@+id/auto_hide_in_power_save_mode"
         android:checkable="true"
         android:title="@string/auto_hide_in_power_saving_mode"/>
