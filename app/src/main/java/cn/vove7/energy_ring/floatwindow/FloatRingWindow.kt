@@ -139,7 +139,7 @@ object FloatRingWindow {
                 wm.addView(bodyView, layoutParams)
                 bodyView.tag = true
             }
-            reloadAnimation()
+            displayEnergyStyle.reloadAnimation()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -178,19 +178,6 @@ object FloatRingWindow {
             return null
         }
         return Unit
-    }
-
-    fun onCharging() {
-        reloadAnimation()
-    }
-
-
-    fun reloadAnimation() {
-        displayEnergyStyle.reloadAnimation()
-    }
-
-    fun onDisCharging() {
-        reloadAnimation()
     }
 
     fun hide() {

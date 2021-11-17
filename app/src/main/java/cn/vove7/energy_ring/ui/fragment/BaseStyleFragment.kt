@@ -74,16 +74,12 @@ abstract class BaseStyleFragment : Fragment() {
         }
         charging_rotateDuration_seek_bar?.onStop { progress ->
             Config.chargingRotateDuration = (charging_rotateDuration_seek_bar.maxVal + 1 - progress) * 1000
-            if (PowerEventReceiver.isCharging) {
-                FloatRingWindow.reloadAnimation()
-            }
+            FloatRingWindow.forceRefresh()
         }
         default_rotateDuration_seek_bar?.onStop { progress -> //[60,180]
             Config.defaultRotateDuration = (default_rotateDuration_seek_bar.maxVal - (progress - default_rotateDuration_seek_bar.minVal)) * 1000
             Log.d("Debug :", "listenSeekBar  ---->$progress ${Config.defaultRotateDuration}")
-            if (!PowerEventReceiver.isCharging) {
-                FloatRingWindow.reloadAnimation()
-            }
+            FloatRingWindow.forceRefresh()
         }
         strokeWidth_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
