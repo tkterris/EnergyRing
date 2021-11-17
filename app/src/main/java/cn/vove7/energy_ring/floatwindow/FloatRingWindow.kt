@@ -60,7 +60,7 @@ object FloatRingWindow {
 
     fun start() {
         if (hasPermission) {
-            forceRefresh()
+            update(true)
         } else {
             openFloatPermission()
             thread {
@@ -71,7 +71,7 @@ object FloatRingWindow {
                 Log.d("Debug :", "hasPermission")
                 if (hasPermission) {
                     Handler(Looper.getMainLooper()).post {
-                        forceRefresh()
+                        update(true)
                     }
                 }
             }
@@ -100,54 +100,8 @@ object FloatRingWindow {
 
     private val bodyView by lazy {
         FrameLayout(App.INS).apply {
-            lastChange = SystemClock.elapsedRealtime()
+            lastRefreshTime = SystemClock.elapsedRealtime()
             addView(displayEnergyStyle.displayView, -2, -2)
-        }
-    }
-
-    fun onDeviceStateChange() {
-        if (canShow()) {
-            show()
-        } else if (isShowing) {
-            hide()
-        }
-    }
-
-    fun forceRefresh() {
-        lastChange = SystemClock.elapsedRealtime()
-        displayEnergyStyle.onRemove()
-        displayEnergyStyleDelegate.clearWeakValue()
-        bodyView.apply {
-            removeAllViews()
-            addView(displayEnergyStyle.displayView, -2, -2)
-        }
-        displayEnergyStyle.update(batteryLevel)
-        displayEnergyStyle.reloadAnimation()
-
-        onDeviceStateChange()
-
-        if (bodyView.tag == true) {
-            wm.updateViewLayout(bodyView, layoutParams)
-        }
-        bodyView.requestLayout()
-    }
-
-    private fun show() {
-        if (!isShowing) {
-            isShowing = true
-            forceRefresh()
-            return
-        }
-        try {
-            bodyView.visibility = View.VISIBLE
-            displayEnergyStyle.update(batteryLevel)
-            if (bodyView.tag != true) {
-                wm.addView(bodyView, layoutParams)
-                bodyView.tag = true
-            }
-            displayEnergyStyle.reloadAnimation()
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
@@ -159,17 +113,47 @@ object FloatRingWindow {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (canShow()) {
+        update(true)
+    }
+
+    fun update(forceRefresh : Boolean = false) {
+        if (!canShow()) {
+            hide()
+        } else {
+            if (!isShowing || forceRefresh || refreshTimeoutElapsed()) {
+                refreshViews()
+            }
             show()
         }
     }
 
-    private const val periodRefreshView = 5 * 60 * 1000
+    private fun refreshViews() {
+        lastRefreshTime = SystemClock.elapsedRealtime()
+        displayEnergyStyle.onRemove()
+        displayEnergyStyleDelegate.clearWeakValue()
+        bodyView.apply {
+            removeAllViews()
+            addView(displayEnergyStyle.displayView, -2, -2)
+        }
 
-    private var lastChange = 0L
+        if (bodyView.tag == true) {
+            wm.updateViewLayout(bodyView, layoutParams)
+        } else {
+            wm.addView(bodyView, layoutParams)
+            bodyView.tag = true
+        }
+        bodyView.requestLayout()
+    }
 
-    fun checkValid(): Boolean {
-        return SystemClock.elapsedRealtime() - lastChange > periodRefreshView
+    private fun show() {
+        try {
+            bodyView.visibility = View.VISIBLE
+            isShowing = true
+            displayEnergyStyle.update(batteryLevel)
+            displayEnergyStyle.reloadAnimation()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun hide() {
@@ -179,6 +163,13 @@ object FloatRingWindow {
         bodyView.visibility = View.INVISIBLE
         isShowing = false
         displayEnergyStyle.onHide()
+    }
+
+    private const val refreshTimeoutPeriod = 5 * 60 * 1000
+    private var lastRefreshTime = 0L
+
+    private fun refreshTimeoutElapsed(): Boolean {
+        return SystemClock.elapsedRealtime() - lastRefreshTime > refreshTimeoutPeriod
     }
 
     private fun canShow(): Boolean {

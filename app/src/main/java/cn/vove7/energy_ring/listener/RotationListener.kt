@@ -34,6 +34,6 @@ object RotationListener : EnergyRingBroadcastReceiver() {
             val wm = App.INS.getSystemService(WindowManager::class.java)!!
             if (wm.defaultDisplay.rotation == 0) { Surface.ROTATION_0 } else { Surface.ROTATION_90 }
         }
-        FloatRingWindow.onDeviceStateChange()
+        FloatRingWindow.update()
     }
 }

@@ -1,6 +1,5 @@
 package cn.vove7.energy_ring.listener
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -30,8 +29,6 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
         get() = IntentFilter().apply {
             addAction(Intent.ACTION_POWER_CONNECTED)
             addAction(Intent.ACTION_POWER_DISCONNECTED)
-            addAction(Intent.ACTION_BATTERY_LOW)
-            addAction(Intent.ACTION_BATTERY_OKAY)
             addAction(Intent.ACTION_BATTERY_CHANGED)
             addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED)
         }
@@ -47,14 +44,12 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
             Intent.ACTION_POWER_CONNECTED -> {//连接充电器
                 Log.d("Debug :", "onReceive  ----> onCharging")
                 isCharging = true
-                FloatRingWindow.onDeviceStateChange()
+                FloatRingWindow.update()
             }
             Intent.ACTION_POWER_DISCONNECTED -> {//断开
                 Log.d("Debug :", "onReceive  ----> onDisCharging")
                 isCharging = false
-                FloatRingWindow.onDeviceStateChange()
-            }
-            Intent.ACTION_BATTERY_LOW -> {//低电量
+                FloatRingWindow.update()
             }
             Intent.ACTION_BATTERY_CHANGED -> {
                 val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) //电量的刻度
@@ -63,16 +58,12 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
                 if (l != lastValue) {
                     lastValue = l
                     Log.d("Debug :", "onReceive  ----> ACTION_BATTERY_CHANGED $l")
-                    FloatRingWindow.onDeviceStateChange()
+                    FloatRingWindow.update()
                 }
-            }
-            Intent.ACTION_BATTERY_OKAY -> {
-                Log.d("Debug :", "onReceive  ----> ACTION_BATTERY_OKAY")
-                FloatRingWindow.forceRefresh()
             }
             PowerManager.ACTION_POWER_SAVE_MODE_CHANGED -> {
                 Log.d("Debug :", "onReceive  ----> ACTION_POWER_SAVE_MODE_CHANGED")
-                FloatRingWindow.onDeviceStateChange()
+                FloatRingWindow.update()
             }
         }
 

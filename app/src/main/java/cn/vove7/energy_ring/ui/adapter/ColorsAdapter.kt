@@ -65,7 +65,7 @@ class ColorsAdapter(val getColors: () -> IntArray, val setColors: (IntArray) -> 
                     kotlin.runCatching {
                         setColors(cs.toMutableList().apply { removeAt(position) }.toIntArray())
                         notifyDataSetChanged()
-                        FloatRingWindow.forceRefresh()
+                        FloatRingWindow.update(true)
                     }
                     true
                 }
@@ -89,7 +89,7 @@ class ColorsAdapter(val getColors: () -> IntArray, val setColors: (IntArray) -> 
                 setColors(getColors().also { it[pos] = c })
                 notifyDataSetChanged()
             }
-            FloatRingWindow.forceRefresh()
+            FloatRingWindow.update(true)
         }
     }
 

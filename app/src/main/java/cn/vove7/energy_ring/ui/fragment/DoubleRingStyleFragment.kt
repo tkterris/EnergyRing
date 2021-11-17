@@ -41,7 +41,7 @@ class DoubleRingStyleFragment : BaseStyleFragment() {
                             Config.secondaryRingFeature = i
                             val fc = resources.getStringArray(R.array.ring_features)[i]
                             view.pick_secondary_ring_func_view.text = getString(R.string.feature_of_secondary_ring, fc)
-                            FloatRingWindow.forceRefresh()
+                            FloatRingWindow.update(true)
                         }
                     }
                 }
@@ -53,7 +53,7 @@ class DoubleRingStyleFragment : BaseStyleFragment() {
                             Config.doubleRingChargingIndex = i
                             val dir = resources.getStringArray(R.array.double_ring_battery_direction)[i]
                             view.pick_battery_direction_view?.text = getString(R.string.battery_direction_format, dir)
-                            FloatRingWindow.forceRefresh()
+                            FloatRingWindow.update(true)
                         }
                     }
                 }
