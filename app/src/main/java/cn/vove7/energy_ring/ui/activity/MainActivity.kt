@@ -76,7 +76,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         val newStyle = ShapeType.values()[i]
         if (Config.energyType != newStyle) {
             Config.energyType = newStyle
-            FloatRingWindow.onDeviceStateChange()
+            FloatRingWindow.forceRefresh()
         }
         style_view_pager.currentItem = i
     }
@@ -115,7 +115,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
             listItems(R.array.modes_of_color) { _, i, _ ->
                 Config.colorMode = i
                 refreshMenu()
-                FloatRingWindow.update()
+                FloatRingWindow.forceRefresh()
             }
         }
     }
@@ -231,12 +231,8 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
 
     private fun applyConfig(info: ConfigInfo) {
         info.applyConfig()
-        if (info.energyType != Config.energyType) {
-            Config.energyType = info.energyType ?: ShapeType.RING
-            FloatRingWindow.onDeviceStateChange()
-        } else {
-            FloatRingWindow.update()
-        }
+        Config.energyType = info.energyType ?: ShapeType.RING
+        FloatRingWindow.forceRefresh()
         refreshData()
     }
 
