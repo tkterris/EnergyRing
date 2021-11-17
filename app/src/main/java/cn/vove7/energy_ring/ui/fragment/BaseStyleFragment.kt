@@ -69,7 +69,7 @@ abstract class BaseStyleFragment : Fragment() {
                 bg_color_view.setBackgroundColor(c)
                 bg_color_view.setTextColor(c.antiColor)
                 Config.ringBgColor = c
-                FloatRingWindow.onDeviceStateChange()
+                FloatRingWindow.forceRefresh()
             }
         }
         charging_rotateDuration_seek_bar?.onStop { progress ->
@@ -84,7 +84,7 @@ abstract class BaseStyleFragment : Fragment() {
         strokeWidth_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.strokeWidthF = progress.toFloat()
-            FloatRingWindow.update()
+            FloatRingWindow.forceRefresh()
         }
         strokeWidth_seek_bar?.onStart {
             FloatRingWindow.forceRefresh()
@@ -92,12 +92,12 @@ abstract class BaseStyleFragment : Fragment() {
         posx_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.posXf = progress
-            FloatRingWindow.update()
+            FloatRingWindow.forceRefresh()
         }
         posy_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.posYf = progress
-            FloatRingWindow.update()
+            FloatRingWindow.forceRefresh()
         }
         size_seek_bar?.onStart {
             FloatRingWindow.forceRefresh()
@@ -105,7 +105,7 @@ abstract class BaseStyleFragment : Fragment() {
         size_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.size = progress
-            FloatRingWindow.update()
+            FloatRingWindow.forceRefresh()
         }
         spacing_seek_bar?.onStart {
             FloatRingWindow.forceRefresh()
@@ -113,7 +113,7 @@ abstract class BaseStyleFragment : Fragment() {
         spacing_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.spacingWidthF = progress
-            FloatRingWindow.update()
+            FloatRingWindow.forceRefresh()
         }
     } ?: Unit
 

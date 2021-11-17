@@ -48,13 +48,11 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
                 Log.d("Debug :", "onReceive  ----> onCharging")
                 isCharging = true
                 FloatRingWindow.onDeviceStateChange()
-                FloatRingWindow.update(lastValue)
             }
             Intent.ACTION_POWER_DISCONNECTED -> {//断开
                 Log.d("Debug :", "onReceive  ----> onDisCharging")
                 isCharging = false
                 FloatRingWindow.onDeviceStateChange()
-                FloatRingWindow.update(lastValue)
             }
             Intent.ACTION_BATTERY_LOW -> {//低电量
             }
@@ -66,12 +64,11 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
                     lastValue = l
                     Log.d("Debug :", "onReceive  ----> ACTION_BATTERY_CHANGED $l")
                     FloatRingWindow.onDeviceStateChange()
-                    FloatRingWindow.update(l)
                 }
             }
             Intent.ACTION_BATTERY_OKAY -> {
                 Log.d("Debug :", "onReceive  ----> ACTION_BATTERY_OKAY")
-                FloatRingWindow.update(1f)
+                FloatRingWindow.forceRefresh()
             }
             PowerManager.ACTION_POWER_SAVE_MODE_CHANGED -> {
                 Log.d("Debug :", "onReceive  ----> ACTION_POWER_SAVE_MODE_CHANGED")

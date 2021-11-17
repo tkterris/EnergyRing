@@ -123,7 +123,13 @@ object FloatRingWindow {
         }
         displayEnergyStyle.update(batteryLevel)
         displayEnergyStyle.reloadAnimation()
+
         onDeviceStateChange()
+
+        if (bodyView.tag == true) {
+            wm.updateViewLayout(bodyView, layoutParams)
+        }
+        bodyView.requestLayout()
     }
 
     private fun show() {
@@ -158,26 +164,12 @@ object FloatRingWindow {
         }
     }
 
-    fun update(p: Float? = null) {
-        if (!isShowing) {
-            return
-        }
-        wm.updateViewLayout(bodyView, layoutParams)
-        checkValid() ?: return
-        displayEnergyStyle.update(p)
-        bodyView.requestLayout()
-    }
-
     private const val periodRefreshView = 5 * 60 * 1000
 
     private var lastChange = 0L
 
-    fun checkValid(): Unit? {
-        if (SystemClock.elapsedRealtime() - lastChange > periodRefreshView) {
-            onDeviceStateChange()
-            return null
-        }
-        return Unit
+    fun checkValid(): Boolean {
+        return SystemClock.elapsedRealtime() - lastChange > periodRefreshView
     }
 
     fun hide() {
