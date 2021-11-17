@@ -101,7 +101,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
                 item.isChecked = Config.screenOffHide
             }
         }
-        FloatRingWindow.onDeviceStateChange()
+        FloatRingWindow.forceRefresh()
         return true
     }
 
