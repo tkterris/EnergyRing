@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.PowerManager
-import android.util.Log
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 
@@ -30,6 +29,6 @@ object ScreenListener : EnergyRingBroadcastReceiver() {
     val screenLocked: Boolean = App.keyguardManager.isDeviceLocked
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        FloatRingWindow.onDeviceStateChange()
+        FloatRingWindow.update()
     }
 }

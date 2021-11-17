@@ -2,14 +2,11 @@ package cn.vove7.energy_ring.energystyle
 
 import android.animation.Animator
 import android.animation.ValueAnimator
-import android.os.SystemClock
 import android.util.Log
 import android.view.animation.LinearInterpolator
 import androidx.annotation.CallSuper
-import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.listener.PowerEventReceiver
-import cn.vove7.energy_ring.listener.ScreenListener
 import cn.vove7.energy_ring.util.Config
 
 /**
@@ -40,10 +37,6 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
             duration = dur.toLong()
             addUpdateListener {
                 lastRotation = it.animatedValue as Float
-                if (FloatRingWindow.checkValid()) {
-                    FloatRingWindow.onDeviceStateChange()
-                    return@addUpdateListener
-                }
                 onAnimatorUpdate(lastRotation)
             }
         }

@@ -1,8 +1,11 @@
 package cn.vove7.energy_ring.service
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.os.IBinder
+import android.view.WindowManager
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.listener.PowerEventReceiver
 import cn.vove7.energy_ring.listener.RotationListener
@@ -29,10 +32,13 @@ class ForegroundService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         running = true
 
-        FloatRingWindow.start()
         ScreenListener.start()
         PowerEventReceiver.start()
         RotationListener.start()
+        Handler().postDelayed({
+            AccService.wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            FloatRingWindow.start()
+        }, 1000)
 
         startForeground(FOREGROUND_NOTIFICATION_ID, getAndShowForeNotification(this))
 
