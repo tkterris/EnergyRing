@@ -60,7 +60,7 @@ object FloatRingWindow {
 
     fun start() {
         if (hasPermission) {
-            show()
+            forceRefresh()
         } else {
             openFloatPermission()
             thread {
@@ -71,7 +71,7 @@ object FloatRingWindow {
                 Log.d("Debug :", "hasPermission")
                 if (hasPermission) {
                     Handler(Looper.getMainLooper()).post {
-                        show()
+                        forceRefresh()
                     }
                 }
             }
@@ -106,7 +106,6 @@ object FloatRingWindow {
     }
 
     fun onDeviceStateChange() {
-        forceRefresh()
         if (canShow()) {
             show()
         } else if (isShowing) {
@@ -124,10 +123,15 @@ object FloatRingWindow {
         }
         displayEnergyStyle.update(batteryLevel)
         displayEnergyStyle.reloadAnimation()
+        onDeviceStateChange()
     }
 
     private fun show() {
-        isShowing = true
+        if (!isShowing) {
+            isShowing = true
+            forceRefresh()
+            return
+        }
         try {
             bodyView.visibility = View.VISIBLE
             displayEnergyStyle.update(batteryLevel)
