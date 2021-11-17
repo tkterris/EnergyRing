@@ -47,14 +47,12 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
             Intent.ACTION_POWER_CONNECTED -> {//连接充电器
                 Log.d("Debug :", "onReceive  ----> onCharging")
                 isCharging = true
-                FloatRingWindow.onCharging()
                 FloatRingWindow.onDeviceStateChange()
                 FloatRingWindow.update(lastValue)
             }
             Intent.ACTION_POWER_DISCONNECTED -> {//断开
                 Log.d("Debug :", "onReceive  ----> onDisCharging")
                 isCharging = false
-                FloatRingWindow.onDisCharging()
                 FloatRingWindow.onDeviceStateChange()
                 FloatRingWindow.update(lastValue)
             }
