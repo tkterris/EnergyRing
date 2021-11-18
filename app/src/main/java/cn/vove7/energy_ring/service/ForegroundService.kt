@@ -3,10 +3,17 @@ package cn.vove7.energy_ring.service
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Handler
 import android.os.IBinder
+import android.provider.Settings
+import android.view.Surface
 import android.view.WindowManager
+import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
+import cn.vove7.energy_ring.listener.EnergyRingBroadcastReceiver
 import cn.vove7.energy_ring.listener.PowerEventReceiver
 import cn.vove7.energy_ring.listener.RotationListener
 import cn.vove7.energy_ring.listener.ScreenListener
@@ -35,12 +42,9 @@ class ForegroundService : Service() {
         ScreenListener.start()
         PowerEventReceiver.start()
         RotationListener.start()
-        Handler().postDelayed({
-            AccService.wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            FloatRingWindow.start()
-        }, 1000)
 
         startForeground(FOREGROUND_NOTIFICATION_ID, getAndShowForeNotification(this))
+        FloatRingWindow.start()
 
         return START_STICKY
     }
@@ -56,5 +60,6 @@ class ForegroundService : Service() {
         getAndShowServiceDestroyedNotification(this)
         super.onDestroy()
     }
+
 
 }
