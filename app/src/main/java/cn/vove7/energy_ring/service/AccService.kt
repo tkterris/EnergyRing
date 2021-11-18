@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.util.Log
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
@@ -21,8 +22,13 @@ class AccService : AccessibilityService() {
         var wm: WindowManager? = null
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return START_STICKY
+    override fun onServiceConnected() {
+        Log.d("Debug", "AccService started")
+        INS = this
+        wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        if (ForegroundService.running) {
+            FloatRingWindow.reload()
+        }
     }
 
     override fun onDestroy() {
@@ -32,14 +38,9 @@ class AccService : AccessibilityService() {
         FloatRingWindow.reload()
     }
 
-
     override fun onCreate() {
-        INS = this
+        Log.d("Debug", "AccService created")
         super.onCreate()
-        Handler().postDelayed({
-            wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            FloatRingWindow.reload()
-        }, 1000)
     }
 
     override fun onInterrupt() {
