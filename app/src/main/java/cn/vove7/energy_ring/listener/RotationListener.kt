@@ -8,6 +8,7 @@ import android.view.Surface
 import android.view.WindowManager
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
+import cn.vove7.energy_ring.service.ForegroundService
 
 
 /**
@@ -19,21 +20,23 @@ import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 object RotationListener : EnergyRingBroadcastReceiver() {
 
     override fun start() {
-        val intentFilter = IntentFilter("android.intent.action.CONFIGURATION_CHANGED")
+        val intentFilter = IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED)
         App.INS.registerReceiver(this, intentFilter)
     }
 
-    var rotation = 0
-
+    private var rotation = Surface.ROTATION_0
     val isRotated: Boolean get() = rotation != Surface.ROTATION_0
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        rotation = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            context?.display?.rotation ?: Surface.ROTATION_0
+        val newRotation = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            App.INS.display
         } else {
-            val wm = App.INS.getSystemService(WindowManager::class.java)!!
-            if (wm.defaultDisplay.rotation == 0) { Surface.ROTATION_0 } else { Surface.ROTATION_90 }
+            App.INS.getSystemService(WindowManager::class.java)?.defaultDisplay
+        }?.rotation ?: Surface.ROTATION_0
+
+        if (rotation != newRotation) {
+            rotation = newRotation
+            FloatRingWindow.update()
         }
-        FloatRingWindow.update()
     }
 }
