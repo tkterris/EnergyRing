@@ -1,7 +1,6 @@
 package cn.vove7.energy_ring.floatwindow
 
 import android.graphics.PixelFormat
-import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -40,7 +39,10 @@ object FloatRingWindow {
 
     private val displayEnergyStyle by displayEnergyStyleDelegate
 
-    var isShowing = false
+    var visible : Boolean get() = bodyView.visibility == View.VISIBLE
+        private set(value) {
+            bodyView.visibility = if (value) { View.VISIBLE } else { View.INVISIBLE }
+        }
     private val layoutParams: LayoutParams
         get() = LayoutParams(
                 -2, -2,
@@ -59,6 +61,7 @@ object FloatRingWindow {
     private val bodyView by lazy {
         FrameLayout(App.INS).apply {
             addView(displayEnergyStyle.displayView, -2, -2)
+            visibility = View.INVISIBLE
         }
     }
 
@@ -66,22 +69,19 @@ object FloatRingWindow {
         if (layoutChange) {
             refreshLayout()
         }
-        if (!canShow()) {
-            hide()
-        } else {
+        if (canShow()) {
             show()
+        } else {
+            hide()
         }
     }
 
     private fun refreshLayout() {
-        hide()
         try {
-            bodyView.tag = false
-            isShowing = false
             wm.removeViewImmediate(bodyView)
         } catch (e: Exception) {
             Log.w("FloatRingWindow","Failed to remove view from WindowManager, " +
-                    "enable debug to view error")
+                    "probably because app is just starting. Enable debug to view error.")
             Log.d("FloatRingWindow", "View removal failure", e)
         }
         displayEnergyStyle.onRemove()
@@ -91,19 +91,14 @@ object FloatRingWindow {
             addView(displayEnergyStyle.displayView, -2, -2)
         }
 
-        if (bodyView.tag == true) {
-            wm.updateViewLayout(bodyView, layoutParams)
-        } else {
-            wm.addView(bodyView, layoutParams)
-            bodyView.tag = true
-        }
+        wm.addView(bodyView, layoutParams)
+
         bodyView.requestLayout()
     }
 
     private fun show() {
         try {
-            bodyView.visibility = View.VISIBLE
-            isShowing = true
+            visible = true
             displayEnergyStyle.update(batteryLevel)
             displayEnergyStyle.reloadAnimation()
         } catch (e: Exception) {
@@ -112,11 +107,10 @@ object FloatRingWindow {
     }
 
     private fun hide() {
-        if (!isShowing) {
+        if (!visible) {
             return
         }
-        bodyView.visibility = View.INVISIBLE
-        isShowing = false
+        visible = false
         displayEnergyStyle.onHide()
     }
 

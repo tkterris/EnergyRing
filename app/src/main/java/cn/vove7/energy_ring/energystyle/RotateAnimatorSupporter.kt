@@ -61,7 +61,7 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
 
         rotateAnimator = buildAnimator(
                 lastRotation.let { if (it > 360) it - 360 else it }, dur)
-        if (!FloatRingWindow.isShowing) {
+        if (!FloatRingWindow.visible) {
             return
         }
         rotateAnimator?.start()
