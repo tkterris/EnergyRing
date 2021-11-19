@@ -63,9 +63,6 @@ val screenSize: Size by lazy {
     }
 }
 
-val accServiceEnabled : Boolean get() = Settings.Secure.getString(App.INS.contentResolver,
-    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES).contains(App.INS.packageName)
-
 val screenWidth: Int get() = screenSize.width
 val screenHeight: Int get() = screenSize.height
 
@@ -186,16 +183,6 @@ fun getColorByRange(progress: Float): Int {
 fun getColorsToUse(colorsDischarging: IntArray, colorsCharging: IntArray) : IntArray {
     return if(PowerEventReceiver.isCharging) colorsCharging else colorsDischarging
 }
-
-fun <T> Iterable<T>.spliteBy(p: (T) -> Boolean): Pair<List<T>, List<T>> {
-    val a = mutableListOf<T>()
-    val b = mutableListOf<T>()
-    forEach { item ->
-        (if (p(item)) a else b).add(item)
-    }
-    return a to b
-}
-
 
 fun inTimeRange(h: Int, b: Int, e: Int): Boolean {
     return if (b > e) {

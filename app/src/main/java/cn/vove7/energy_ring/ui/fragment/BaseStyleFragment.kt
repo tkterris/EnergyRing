@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
-import cn.vove7.energy_ring.listener.PowerEventReceiver
 import cn.vove7.energy_ring.ui.adapter.ColorsAdapter
 import cn.vove7.energy_ring.util.Config
 import cn.vove7.energy_ring.util.antiColor
@@ -69,51 +68,51 @@ abstract class BaseStyleFragment : Fragment() {
                 bg_color_view.setBackgroundColor(c)
                 bg_color_view.setTextColor(c.antiColor)
                 Config.ringBgColor = c
-                FloatRingWindow.update(forceRefresh = true)
+                FloatRingWindow.update(layoutChange = true)
             }
         }
         charging_rotateDuration_seek_bar?.onStop { progress ->
             Config.chargingRotateDuration = (charging_rotateDuration_seek_bar.maxVal + 1 - progress) * 1000
-            FloatRingWindow.update(forceRefresh = true)
+            FloatRingWindow.update(layoutChange = true)
         }
         default_rotateDuration_seek_bar?.onStop { progress -> //[60,180]
             Config.defaultRotateDuration = (default_rotateDuration_seek_bar.maxVal - (progress - default_rotateDuration_seek_bar.minVal)) * 1000
             Log.d("Debug :", "listenSeekBar  ---->$progress ${Config.defaultRotateDuration}")
-            FloatRingWindow.update(forceRefresh = true)
+            FloatRingWindow.update(layoutChange = true)
         }
         strokeWidth_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.strokeWidthF = progress.toFloat()
-            FloatRingWindow.update(forceRefresh = true)
+            FloatRingWindow.update(layoutChange = true)
         }
         strokeWidth_seek_bar?.onStart {
-            FloatRingWindow.update(forceRefresh = true)
+            FloatRingWindow.update(layoutChange = true)
         }
         posx_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.posXf = progress
-            FloatRingWindow.update(forceRefresh = true)
+            FloatRingWindow.update(layoutChange = true)
         }
         posy_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.posYf = progress
-            FloatRingWindow.update(forceRefresh = true)
+            FloatRingWindow.update(layoutChange = true)
         }
         size_seek_bar?.onStart {
-            FloatRingWindow.update(forceRefresh = true)
+            FloatRingWindow.update(layoutChange = true)
         }
         size_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.size = progress
-            FloatRingWindow.update(forceRefresh = true)
+            FloatRingWindow.update(layoutChange = true)
         }
         spacing_seek_bar?.onStart {
-            FloatRingWindow.update(forceRefresh = true)
+            FloatRingWindow.update(layoutChange = true)
         }
         spacing_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.spacingWidthF = progress
-            FloatRingWindow.update(forceRefresh = true)
+            FloatRingWindow.update(layoutChange = true)
         }
     } ?: Unit
 
