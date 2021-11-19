@@ -17,28 +17,16 @@ import cn.vove7.energy_ring.util.Config
  */
 abstract class RotateAnimatorSupporter : EnergyStyle {
 
-    val TAG = this::class.java.simpleName
+    val TAG : String = this::class.java.simpleName
 
     companion object {
-        var lastRotation = 0f
     }
 
-    var rotateAnimator: Animator? = null
-
-    private fun buildAnimator(
-            start: Float = 0f,
-            dur: Int
-    ): Animator {
-        val end: Float = 360 + start
-
-        return ValueAnimator.ofFloat(start, end).apply {
-            repeatCount = -1
-            interpolator = LinearInterpolator()
-            duration = dur.toLong()
-            addUpdateListener {
-                lastRotation = it.animatedValue as Float
-                onAnimatorUpdate(lastRotation)
-            }
+    private val rotateAnimator: ValueAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
+        repeatCount = ValueAnimator.INFINITE
+        interpolator = LinearInterpolator()
+        addUpdateListener {
+            onAnimatorUpdate(it.animatedValue as Float)
         }
     }
 
@@ -46,51 +34,55 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
 
     @CallSuper
     override fun reloadAnimation() {
-        rotateAnimator?.cancel()
-        //未充电 未自动旋转
-        if (!PowerEventReceiver.isCharging && !Config.autoRotateDisCharging) {
-            Log.d(TAG, "未充电不自动旋转  ----> ")
-            lastRotation = 0f
-            onAnimatorUpdate(0f)
-            return
+        if (!rotateAnimator.isStarted) {
+            Log.d(TAG, "Initial start of animation, should only be called once")
+            rotateAnimator.start()
         }
-        val dur = if (PowerEventReceiver.isCharging) Config.chargingRotateDuration
-        else Config.defaultRotateDuration
 
-        Log.d(TAG, "reloadAnimation  ----> dur: $dur")
-
-        rotateAnimator = buildAnimator(
-                lastRotation.let { if (it > 360) it - 360 else it }, dur)
         if (!FloatRingWindow.visible) {
+            rotateAnimator.pause()
             return
         }
-        rotateAnimator?.start()
-    }
 
+        val rotationDuration = when {
+            PowerEventReceiver.isCharging -> Config.chargingRotateDuration
+            Config.autoRotateDisCharging -> Config.defaultRotateDuration
+            else -> 0L
+        }
+
+        Log.d(TAG, "Updating rotation duration  ----> dur: $rotationDuration")
+        if (rotationDuration == 0L) {
+            rotateAnimator.pause()
+            rotateAnimator.setCurrentFraction(0f)
+        } else {
+            if (rotationDuration != rotateAnimator.duration) {
+                val animatedFraction = rotateAnimator.animatedFraction
+                rotateAnimator.setDuration(rotationDuration.toLong())
+                    .setCurrentFraction(animatedFraction)
+            }
+            rotateAnimator.resume()
+        }
+    }
 
     @CallSuper
     override fun resumeAnimator() {
-        if (rotateAnimator?.isPaused != true) {
-            rotateAnimator?.start()
-        } else {
-            rotateAnimator?.resume()
-        }
+        rotateAnimator.resume()
+    }
+
+    override fun pauseAnimator() {
+        Log.d(TAG, "pauseAnimator  ----> $TAG")
+        rotateAnimator.pause()
     }
 
     @CallSuper
     override fun onHide() {
         Log.d(TAG, "onHide  ----> $TAG")
-        pauseAnimator()
-    }
-
-    override fun pauseAnimator() {
-        Log.d(TAG, "pauseAnimator  ----> $TAG")
-        rotateAnimator?.pause()
+        rotateAnimator.pause()
     }
 
     @CallSuper
     override fun onRemove() {
         Log.d(TAG, "onRemove  ----> $TAG")
-        rotateAnimator?.cancel()
+        rotateAnimator.pause()
     }
 }
