@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.hardware.display.DisplayManager
 import android.os.BatteryManager
 import android.os.Build
+import android.provider.Settings
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
@@ -62,6 +63,8 @@ val screenSize: Size by lazy {
     }
 }
 
+val accServiceEnabled : Boolean get() = Settings.Secure.getString(App.INS.contentResolver,
+    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES).contains(App.INS.packageName)
 
 val screenWidth: Int get() = screenSize.width
 val screenHeight: Int get() = screenSize.height

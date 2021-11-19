@@ -52,7 +52,7 @@ object FloatRingWindow {
 
     fun checkPermissionAndUpdate() {
         if (hasPermission) {
-            update(forceRefresh = true)
+            update(forceRefresh = true, reload = true)
         } else {
             openFloatPermission()
             thread {
@@ -63,7 +63,7 @@ object FloatRingWindow {
                 Log.d("Debug :", "hasPermission")
                 if (hasPermission) {
                     Handler(Looper.getMainLooper()).post {
-                        update(forceRefresh = true)
+                        update(forceRefresh = true, reload = true)
                     }
                 }
             }
@@ -171,11 +171,12 @@ object FloatRingWindow {
         val cond4 = !Config.screenOffHide || ScreenListener.screenOn
         val fullyTransparent = isTransparent(Config.ringBgColor)
                 && isTransparent(getColorByRange(batteryLevel))
+        val serviceStarted = ForegroundService.running || AccService.running
 
         Log.d("Debug :", "canShow  ----> hasPermission: $cond0 旋转: $cond1 " +
                 "省电: $cond3 screen on: $cond4 transparent: $fullyTransparent")
 
-        return cond0 && cond1 && cond3 && cond4 && !fullyTransparent && ForegroundService.running
+        return cond0 && cond1 && cond3 && cond4 && !fullyTransparent && serviceStarted
 
     }
 

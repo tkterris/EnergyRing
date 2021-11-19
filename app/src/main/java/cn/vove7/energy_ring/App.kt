@@ -34,7 +34,7 @@ class App : Application() {
 
     override fun onCreate() {
         INS = this
-        configAndStartForeground(this)
+        configAndStartForeground()
         super.onCreate()
 
     }
