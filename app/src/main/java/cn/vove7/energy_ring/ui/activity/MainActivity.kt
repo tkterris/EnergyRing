@@ -11,11 +11,10 @@ import android.widget.ActionMenuView
 import android.widget.ImageView
 import android.widget.Toast
 import cn.vove7.energy_ring.App
-import cn.vove7.energy_ring.BuildConfig
 import cn.vove7.energy_ring.R
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
-import cn.vove7.energy_ring.listener.RotationListener
 import cn.vove7.energy_ring.model.ShapeType
+import cn.vove7.energy_ring.service.AccService
 import cn.vove7.energy_ring.ui.adapter.StylePagerAdapter
 import cn.vove7.energy_ring.util.*
 import com.afollestad.materialdialogs.MaterialDialog
@@ -57,7 +56,12 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         menu_view.menu.findItem(R.id.rotate_auto_hide).isChecked = Config.autoHideRotate
         menu_view.menu.findItem(R.id.screen_off_auto_hide).isChecked = Config.screenOffHide
         menu_view.menu.findItem(R.id.auto_hide_in_power_save_mode).isChecked = Config.powerSaveHide
+
         refreshMenu()
+
+        if (!AccService.enabled) {
+            openAccessibilityPermission()
+        }
     }
 
     private fun initRadioStylesView() {
@@ -76,7 +80,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         val newStyle = ShapeType.values()[i]
         if (Config.energyType != newStyle) {
             Config.energyType = newStyle
-            FloatRingWindow.update(forceRefresh = true)
+            FloatRingWindow.update(layoutChange = true)
         }
         style_view_pager.currentItem = i
     }
@@ -101,7 +105,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
                 item.isChecked = Config.screenOffHide
             }
         }
-        FloatRingWindow.update(forceRefresh = true)
+        FloatRingWindow.update(layoutChange = true)
         return true
     }
 
@@ -115,7 +119,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
             listItems(R.array.modes_of_color) { _, i, _ ->
                 Config.colorMode = i
                 refreshMenu()
-                FloatRingWindow.update(forceRefresh = true)
+                FloatRingWindow.update(layoutChange = true)
             }
         }
     }
@@ -232,7 +236,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
     private fun applyConfig(info: ConfigInfo) {
         info.applyConfig()
         Config.energyType = info.energyType ?: ShapeType.RING
-        FloatRingWindow.update(forceRefresh = true)
+        FloatRingWindow.update(layoutChange = true)
         refreshData()
     }
 

@@ -1,10 +1,6 @@
 package cn.vove7.energy_ring.floatwindow
 
 import android.graphics.PixelFormat
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
@@ -21,10 +17,7 @@ import cn.vove7.energy_ring.listener.RotationListener
 import cn.vove7.energy_ring.listener.ScreenListener
 import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.service.AccService
-import cn.vove7.energy_ring.service.ForegroundService
 import cn.vove7.energy_ring.util.*
-import java.lang.Thread.sleep
-import kotlin.concurrent.thread
 
 
 /**
@@ -34,9 +27,6 @@ import kotlin.concurrent.thread
  * 2020/5/8
  */
 object FloatRingWindow {
-
-    private val hasPermission
-        get() = Settings.canDrawOverlays(App.INS)
 
     private val displayEnergyStyleDelegate = weakLazy {
         buildEnergyStyle()
@@ -50,36 +40,12 @@ object FloatRingWindow {
 
     private val displayEnergyStyle by displayEnergyStyleDelegate
 
-    fun checkPermissionAndUpdate() {
-        if (hasPermission) {
-            update(forceRefresh = true, reload = true)
-        } else {
-            openFloatPermission()
-            thread {
-                while (!hasPermission) {
-                    Log.d("Debug :", "wait p...")
-                    sleep(100)
-                }
-                Log.d("Debug :", "hasPermission")
-                if (hasPermission) {
-                    Handler(Looper.getMainLooper()).post {
-                        update(forceRefresh = true, reload = true)
-                    }
-                }
-            }
-        }
-    }
-
     var isShowing = false
     private val layoutParams: LayoutParams
         get() = LayoutParams(
                 -2, -2,
                 Config.posX, Config.posY,
-                when {
-                    AccService.running -> LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> LayoutParams.TYPE_APPLICATION_OVERLAY
-                    else -> LayoutParams.TYPE_PHONE
-                },
+                LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
                 LayoutParams.FLAG_NOT_TOUCH_MODAL or
                         LayoutParams.FLAG_NOT_FOCUSABLE or
                         LayoutParams.FLAG_LAYOUT_IN_SCREEN or
@@ -92,35 +58,32 @@ object FloatRingWindow {
 
     private val bodyView by lazy {
         FrameLayout(App.INS).apply {
-            lastRefreshTime = SystemClock.elapsedRealtime()
             addView(displayEnergyStyle.displayView, -2, -2)
         }
     }
 
-    @Synchronized fun update(forceRefresh : Boolean = false, reload : Boolean = false) {
-        if (reload) {
-            try {
-                bodyView.tag = false
-                isShowing = false
-                wm.removeViewImmediate(bodyView)
-            } catch (e: Exception) {
-                Log.w("FloatRingWindow","Failed to remove view from WindowManager, " +
-                        "enable debug to view error")
-                Log.d("FloatRingWindow", "View removal failure", e)
-            }
+    @Synchronized fun update(layoutChange : Boolean = false) {
+        if (layoutChange) {
+            refreshLayout()
         }
         if (!canShow()) {
             hide()
         } else {
-            if (!isShowing || forceRefresh || refreshTimeoutElapsed()) {
-                refreshViews()
-            }
             show()
         }
     }
 
-    private fun refreshViews() {
-        lastRefreshTime = SystemClock.elapsedRealtime()
+    private fun refreshLayout() {
+        hide()
+        try {
+            bodyView.tag = false
+            isShowing = false
+            wm.removeViewImmediate(bodyView)
+        } catch (e: Exception) {
+            Log.w("FloatRingWindow","Failed to remove view from WindowManager, " +
+                    "enable debug to view error")
+            Log.d("FloatRingWindow", "View removal failure", e)
+        }
         displayEnergyStyle.onRemove()
         displayEnergyStyleDelegate.clearWeakValue()
         bodyView.apply {
@@ -157,26 +120,18 @@ object FloatRingWindow {
         displayEnergyStyle.onHide()
     }
 
-    private const val refreshTimeoutPeriod = 5 * 60 * 1000
-    private var lastRefreshTime = 0L
-
-    private fun refreshTimeoutElapsed(): Boolean {
-        return SystemClock.elapsedRealtime() - lastRefreshTime > refreshTimeoutPeriod
-    }
-
     private fun canShow(): Boolean {
-        val cond0 = hasPermission
         val cond1 = !Config.autoHideRotate || !RotationListener.isRotated
         val cond3 = !Config.powerSaveHide || !PowerEventReceiver.powerSaveMode
         val cond4 = !Config.screenOffHide || ScreenListener.screenOn
         val fullyTransparent = isTransparent(Config.ringBgColor)
                 && isTransparent(getColorByRange(batteryLevel))
-        val serviceStarted = ForegroundService.running || AccService.running
+        val serviceRunning = AccService.running
 
-        Log.d("Debug :", "canShow  ----> hasPermission: $cond0 旋转: $cond1 " +
-                "省电: $cond3 screen on: $cond4 transparent: $fullyTransparent")
+        Log.d("Debug :", "canShow  ----> 旋转: $cond1 省电: $cond3 screen on: $cond4 " +
+                "transparent: $fullyTransparent service running: $serviceRunning")
 
-        return cond0 && cond1 && cond3 && cond4 && !fullyTransparent && serviceStarted
+        return cond1 && cond3 && cond4 && !fullyTransparent && serviceRunning
 
     }
 
