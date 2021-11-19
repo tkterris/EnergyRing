@@ -1,19 +1,23 @@
 package cn.vove7.energy_ring.util
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.hardware.display.DisplayManager
 import android.os.BatteryManager
 import android.os.Build
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
+import android.view.Display
 import android.view.WindowManager
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.R
 import cn.vove7.energy_ring.listener.PowerEventReceiver
+import cn.vove7.energy_ring.service.AccService
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
 import com.google.android.material.animation.ArgbEvaluatorCompat
@@ -29,12 +33,28 @@ val isDarkMode: Boolean
     get() = (App.INS.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
             Configuration.UI_MODE_NIGHT_YES
 
+private val displayContext : Context get() =
+    if (AccService.running) {
+        AccService.INS
+    } else {
+        App.INS
+    }
+
+val wm: WindowManager get() = displayContext.getSystemService(WindowManager::class.java)
+val display: Display get() = displayContext.getSystemService(DisplayManager::class.java)
+    .getDisplay(Display.DEFAULT_DISPLAY)
 
 //正常 rotation 时的高宽
 val screenSize: Size by lazy {
     val dm = DisplayMetrics()
-    App.windowsManager.defaultDisplay.getMetrics(dm)
-    val roa = App.INS.getSystemService(WindowManager::class.java)!!.defaultDisplay.rotation
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val bounds = wm.maximumWindowMetrics.bounds
+        dm.widthPixels = bounds.width()
+        dm.heightPixels = bounds.height()
+    } else {
+        display.getMetrics(dm)
+    }
+    val roa = display.rotation
     if (roa == 0 || roa == 2) {
         Size(dm.widthPixels, dm.heightPixels)
     } else {

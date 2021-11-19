@@ -4,7 +4,6 @@ import android.app.Application
 import android.app.KeyguardManager
 import android.content.Intent
 import android.os.PowerManager
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.StringRes
 import cn.vove7.energy_ring.util.configAndStartForeground
@@ -27,9 +26,6 @@ class App : Application() {
 
         val powerManager by lazy {
             INS.getSystemService(PowerManager::class.java)!!
-        }
-        val windowsManager by lazy {
-            INS.getSystemService(WindowManager::class.java)!!
         }
         val keyguardManager by lazy {
             INS.getSystemService(KeyguardManager::class.java)!!

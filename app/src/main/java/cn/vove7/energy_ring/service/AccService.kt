@@ -1,11 +1,7 @@
 package cn.vove7.energy_ring.service
 
 import android.accessibilityservice.AccessibilityService
-import android.content.Context
-import android.content.Intent
-import android.os.Handler
 import android.util.Log
-import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 
@@ -17,30 +13,29 @@ import cn.vove7.energy_ring.floatwindow.FloatRingWindow
  */
 class AccService : AccessibilityService() {
     companion object {
-        var INS: AccService? = null
-        val hasOpend get() = INS != null
-        var wm: WindowManager? = null
-    }
-
-    override fun onServiceConnected() {
-        Log.d("Debug", "AccService started")
-        INS = this
-        wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        if (ForegroundService.running) {
-            FloatRingWindow.reload()
-        }
-    }
-
-    override fun onDestroy() {
-        INS = null
-        wm = null
-        super.onDestroy()
-        FloatRingWindow.reload()
+        lateinit var INS : AccService
+        var running : Boolean = false
     }
 
     override fun onCreate() {
         Log.d("Debug", "AccService created")
+        INS = this
         super.onCreate()
+    }
+
+    override fun onServiceConnected() {
+        Log.d("Debug", "AccService started")
+        running = true
+        if (ForegroundService.running) {
+            FloatRingWindow.update(forceRefresh = true, reload = true)
+        }
+    }
+
+    override fun onDestroy() {
+        Log.d("Debug", "AccService destroyed")
+        running = false
+        super.onDestroy()
+        FloatRingWindow.update(forceRefresh = true, reload = true)
     }
 
     override fun onInterrupt() {
