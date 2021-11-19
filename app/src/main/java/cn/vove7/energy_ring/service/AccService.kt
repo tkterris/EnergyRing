@@ -3,7 +3,10 @@ package cn.vove7.energy_ring.service
 import android.accessibilityservice.AccessibilityService
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
+import cn.vove7.energy_ring.util.startEnergyForegroundService
+import cn.vove7.energy_ring.util.stopEnergyForegroundService
 
 /**
  * # AccService
@@ -26,16 +29,15 @@ class AccService : AccessibilityService() {
     override fun onServiceConnected() {
         Log.d("Debug", "AccService started")
         running = true
-        if (ForegroundService.running) {
-            FloatRingWindow.update(forceRefresh = true, reload = true)
-        }
+        stopEnergyForegroundService()
+        FloatRingWindow.checkPermissionAndUpdate()
     }
 
     override fun onDestroy() {
         Log.d("Debug", "AccService destroyed")
         running = false
         super.onDestroy()
-        FloatRingWindow.update(forceRefresh = true, reload = true)
+        startEnergyForegroundService()
     }
 
     override fun onInterrupt() {

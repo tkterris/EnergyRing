@@ -3,10 +3,8 @@ package cn.vove7.energy_ring.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
-import cn.vove7.energy_ring.listener.PowerEventReceiver
-import cn.vove7.energy_ring.listener.RotationListener
-import cn.vove7.energy_ring.listener.ScreenListener
 import cn.vove7.energy_ring.util.FOREGROUND_NOTIFICATION_ID
 import cn.vove7.energy_ring.util.getAndShowServiceDestroyedNotification
 import cn.vove7.energy_ring.util.getAndShowForeNotification
@@ -26,11 +24,8 @@ class ForegroundService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d("ForegroundService", "starting service")
         running = true
-
-        ScreenListener.start()
-        PowerEventReceiver.start()
-        RotationListener.start()
 
         startForeground(FOREGROUND_NOTIFICATION_ID, getAndShowForeNotification(this))
         FloatRingWindow.checkPermissionAndUpdate()
@@ -39,13 +34,12 @@ class ForegroundService : Service() {
     }
 
     override fun onDestroy() {
+        Log.d("ForegroundService", "stopping service")
         running = false
+        if (!AccService.running) {
+            getAndShowServiceDestroyedNotification(this)
+        }
 
-        ScreenListener.stop()
-        PowerEventReceiver.stop()
-        RotationListener.stop()
-
-        getAndShowServiceDestroyedNotification(this)
         super.onDestroy()
     }
 
