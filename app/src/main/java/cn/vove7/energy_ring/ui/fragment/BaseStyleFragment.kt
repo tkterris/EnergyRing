@@ -69,51 +69,51 @@ abstract class BaseStyleFragment : Fragment() {
                 bg_color_view.setBackgroundColor(c)
                 bg_color_view.setTextColor(c.antiColor)
                 Config.ringBgColor = c
-                FloatRingWindow.update(true)
+                FloatRingWindow.update(forceRefresh = true)
             }
         }
         charging_rotateDuration_seek_bar?.onStop { progress ->
             Config.chargingRotateDuration = (charging_rotateDuration_seek_bar.maxVal + 1 - progress) * 1000
-            FloatRingWindow.update(true)
+            FloatRingWindow.update(forceRefresh = true)
         }
         default_rotateDuration_seek_bar?.onStop { progress -> //[60,180]
             Config.defaultRotateDuration = (default_rotateDuration_seek_bar.maxVal - (progress - default_rotateDuration_seek_bar.minVal)) * 1000
             Log.d("Debug :", "listenSeekBar  ---->$progress ${Config.defaultRotateDuration}")
-            FloatRingWindow.update(true)
+            FloatRingWindow.update(forceRefresh = true)
         }
         strokeWidth_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.strokeWidthF = progress.toFloat()
-            FloatRingWindow.update(true)
+            FloatRingWindow.update(forceRefresh = true)
         }
         strokeWidth_seek_bar?.onStart {
-            FloatRingWindow.update(true)
+            FloatRingWindow.update(forceRefresh = true)
         }
         posx_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.posXf = progress
-            FloatRingWindow.update(true)
+            FloatRingWindow.update(forceRefresh = true)
         }
         posy_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.posYf = progress
-            FloatRingWindow.update(true)
+            FloatRingWindow.update(forceRefresh = true)
         }
         size_seek_bar?.onStart {
-            FloatRingWindow.update(true)
+            FloatRingWindow.update(forceRefresh = true)
         }
         size_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.size = progress
-            FloatRingWindow.update(true)
+            FloatRingWindow.update(forceRefresh = true)
         }
         spacing_seek_bar?.onStart {
-            FloatRingWindow.update(true)
+            FloatRingWindow.update(forceRefresh = true)
         }
         spacing_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.spacingWidthF = progress
-            FloatRingWindow.update(true)
+            FloatRingWindow.update(forceRefresh = true)
         }
     } ?: Unit
 

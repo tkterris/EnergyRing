@@ -1,23 +1,12 @@
 package cn.vove7.energy_ring.service
 
 import android.app.Service
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.content.res.Configuration
-import android.os.Build
-import android.os.Handler
 import android.os.IBinder
-import android.provider.Settings
-import android.view.Surface
-import android.view.WindowManager
-import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
-import cn.vove7.energy_ring.listener.EnergyRingBroadcastReceiver
 import cn.vove7.energy_ring.listener.PowerEventReceiver
 import cn.vove7.energy_ring.listener.RotationListener
 import cn.vove7.energy_ring.listener.ScreenListener
-import cn.vove7.energy_ring.util.Config
 import cn.vove7.energy_ring.util.FOREGROUND_NOTIFICATION_ID
 import cn.vove7.energy_ring.util.getAndShowServiceDestroyedNotification
 import cn.vove7.energy_ring.util.getAndShowForeNotification
@@ -44,7 +33,7 @@ class ForegroundService : Service() {
         RotationListener.start()
 
         startForeground(FOREGROUND_NOTIFICATION_ID, getAndShowForeNotification(this))
-        FloatRingWindow.start()
+        FloatRingWindow.checkPermissionAndUpdate()
 
         return START_STICKY
     }
@@ -52,7 +41,6 @@ class ForegroundService : Service() {
     override fun onDestroy() {
         running = false
 
-        FloatRingWindow.hide()
         ScreenListener.stop()
         PowerEventReceiver.stop()
         RotationListener.stop()

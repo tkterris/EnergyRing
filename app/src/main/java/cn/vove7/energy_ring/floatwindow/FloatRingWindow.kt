@@ -9,7 +9,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
+import android.view.WindowManager.LayoutParams
 import android.widget.FrameLayout
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.energystyle.DoubleRingStyle
@@ -22,12 +22,7 @@ import cn.vove7.energy_ring.listener.ScreenListener
 import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.service.AccService
 import cn.vove7.energy_ring.service.ForegroundService
-import cn.vove7.energy_ring.util.Config
-import cn.vove7.energy_ring.util.batteryLevel
-import cn.vove7.energy_ring.util.getColorByRange
-import cn.vove7.energy_ring.util.isTransparent
-import cn.vove7.energy_ring.util.openFloatPermission
-import cn.vove7.energy_ring.util.weakLazy
+import cn.vove7.energy_ring.util.*
 import java.lang.Thread.sleep
 import kotlin.concurrent.thread
 
@@ -47,7 +42,7 @@ object FloatRingWindow {
         buildEnergyStyle()
     }
 
-    fun buildEnergyStyle(): EnergyStyle = when (Config.energyType) {
+    private fun buildEnergyStyle(): EnergyStyle = when (Config.energyType) {
         ShapeType.RING -> RingStyle()
         ShapeType.DOUBLE_RING -> DoubleRingStyle()
         ShapeType.PILL -> PillStyle()
@@ -55,12 +50,9 @@ object FloatRingWindow {
 
     private val displayEnergyStyle by displayEnergyStyleDelegate
 
-    private val wm: WindowManager
-        get() = AccService.wm ?: App.windowsManager
-
-    fun start() {
+    fun checkPermissionAndUpdate() {
         if (hasPermission) {
-            update(true)
+            update(forceRefresh = true)
         } else {
             openFloatPermission()
             thread {
@@ -71,7 +63,7 @@ object FloatRingWindow {
                 Log.d("Debug :", "hasPermission")
                 if (hasPermission) {
                     Handler(Looper.getMainLooper()).post {
-                        update(true)
+                        update(forceRefresh = true)
                     }
                 }
             }
@@ -79,20 +71,20 @@ object FloatRingWindow {
     }
 
     var isShowing = false
-    private val layoutParams: WindowManager.LayoutParams
-        get() = WindowManager.LayoutParams(
+    private val layoutParams: LayoutParams
+        get() = LayoutParams(
                 -2, -2,
                 Config.posX, Config.posY,
                 when {
-                    AccService.hasOpend -> WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                    else -> WindowManager.LayoutParams.TYPE_PHONE
+                    AccService.running -> LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> LayoutParams.TYPE_APPLICATION_OVERLAY
+                    else -> LayoutParams.TYPE_PHONE
                 },
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                        WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR or
-                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, 0
+                LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                        LayoutParams.FLAG_NOT_FOCUSABLE or
+                        LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                        LayoutParams.FLAG_LAYOUT_INSET_DECOR or
+                        LayoutParams.FLAG_NOT_TOUCHABLE, 0
         ).apply {
             format = PixelFormat.RGBA_8888
             gravity = Gravity.TOP or Gravity.START
@@ -105,18 +97,18 @@ object FloatRingWindow {
         }
     }
 
-    fun reload() {
-        try {
-            bodyView.tag = false
-            isShowing = false
-            wm.removeViewImmediate(bodyView)
-        } catch (e: Exception) {
-            e.printStackTrace()
+    @Synchronized fun update(forceRefresh : Boolean = false, reload : Boolean = false) {
+        if (reload) {
+            try {
+                bodyView.tag = false
+                isShowing = false
+                wm.removeViewImmediate(bodyView)
+            } catch (e: Exception) {
+                Log.w("FloatRingWindow","Failed to remove view from WindowManager, " +
+                        "enable debug to view error")
+                Log.d("FloatRingWindow", "View removal failure", e)
+            }
         }
-        update(true)
-    }
-
-    fun update(forceRefresh : Boolean = false) {
         if (!canShow()) {
             hide()
         } else {
@@ -156,7 +148,7 @@ object FloatRingWindow {
         }
     }
 
-    fun hide() {
+    private fun hide() {
         if (!isShowing) {
             return
         }
