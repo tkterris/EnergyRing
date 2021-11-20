@@ -79,6 +79,7 @@ object FloatRingWindow {
     }
 
     private fun refreshLayout() {
+        Log.d("FloatRingWindow","Refreshing layout")
         try {
             wm.removeViewImmediate(bodyView)
         } catch (e: Exception) {

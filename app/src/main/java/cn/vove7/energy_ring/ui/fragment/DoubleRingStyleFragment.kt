@@ -3,6 +3,7 @@ package cn.vove7.energy_ring.ui.fragment
 import android.view.View
 import cn.vove7.energy_ring.R
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
+import cn.vove7.energy_ring.util.state.ApplicationState
 import cn.vove7.energy_ring.util.state.Config
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
@@ -40,7 +41,7 @@ class DoubleRingStyleFragment : BaseStyleFragment() {
                             Config.INS.secondaryRingFeature = i
                             val fc = resources.getStringArray(R.array.ring_features)[i]
                             view.pick_secondary_ring_func_view.text = getString(R.string.feature_of_secondary_ring, fc)
-                            FloatRingWindow.update(layoutChange = true)
+                            ApplicationState.applyConfig()
                         }
                     }
                 }
@@ -52,7 +53,7 @@ class DoubleRingStyleFragment : BaseStyleFragment() {
                             Config.INS.doubleRingChargingIndex = i
                             val dir = resources.getStringArray(R.array.double_ring_battery_direction)[i]
                             view.pick_battery_direction_view?.text = getString(R.string.battery_direction_format, dir)
-                            FloatRingWindow.update(layoutChange = true)
+                            ApplicationState.applyConfig()
                         }
                     }
                 }

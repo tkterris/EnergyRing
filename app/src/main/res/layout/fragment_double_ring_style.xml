@@ -61,7 +61,7 @@
             app:title="@string/spacing" />
 
         <cn.vove7.energy_ring.ui.view.AccurateSeekBar
-            android:id="@+id/default_rotateDuration_seek_bar"
+            android:id="@+id/discharging_rotateDuration_seek_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

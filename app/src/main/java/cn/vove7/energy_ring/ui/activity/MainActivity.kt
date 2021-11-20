@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.R
-import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.service.AccService
 import cn.vove7.energy_ring.ui.adapter.StylePagerAdapter
@@ -50,7 +49,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         menu_view.setOnMenuItemClickListener(this)
         menu_view.overflowIcon = getDrawable(R.drawable.ic_settings)
 
-        refreshData()
+        refreshMenu()
 
         if (!AccService.enabled) {
             openAccessibilityPermission()
@@ -73,7 +72,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         val newStyle = ShapeType.values()[i]
         if (Config.INS.energyType != newStyle) {
             Config.INS.energyType = newStyle
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
         style_view_pager.currentItem = i
     }
@@ -98,8 +97,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
                 item.isChecked = Config.INS.showScreenOff
             }
         }
-        refreshData()
-        FloatRingWindow.update(layoutChange = true)
+        applyConfigAndRefreshMenu()
         return true
     }
 
@@ -112,14 +110,13 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
             title(R.string.color_mode)
             listItems(R.array.modes_of_color) { _, i, _ ->
                 Config.INS.colorMode = i
-                refreshData()
-                FloatRingWindow.update(layoutChange = true)
+                applyConfigAndRefreshMenu()
             }
         }
     }
 
     private fun outConfig(view: View) {
-        val msg = Config.jsonSerialize(Config.INS)
+        val msg = Config.INS.jsonSerialize()
         MaterialDialog(this).show {
             title(R.string.config_data)
             message(text = "$msg\n" + getString(R.string.welcome_to_share_on_comment_area))
@@ -138,7 +135,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
             title(R.string.config_title)
             input(waitForPositiveButton = true, prefill = name) { _, s ->
                 config.buildModel = s.toString()
-                ApplicationState.saveConfig(config)
+                ApplicationState.addSavedConfig(config)
             }
             positiveButton()
             negativeButton()
@@ -162,13 +159,13 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
             }
             listItems(items = ds.map { it.buildModel }, waitForPositiveButton = false) { _, i, _ ->
                 dismiss()
-                applyConfig(ds[i])
+                applyConfigAndRefreshMenu(ds[i])
             }
             checkBoxPrompt(R.string.display_only_this_model, isCheckedDefault = ds.size != allDs.size) { c ->
                 val dss = if (c) allDs.filter { it.buildModel.equals(Build.MODEL, ignoreCase = true) }
                 else allDs
                 listItems(items = dss.map { it.buildModel }, waitForPositiveButton = false) { _, i, _ ->
-                    applyConfig(dss[i])
+                    applyConfigAndRefreshMenu(dss[i])
                 }
             }
             positiveButton(R.string.edit) { editLocalConfig() }
@@ -189,13 +186,12 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         }
     }
 
-    private fun applyConfig(config: Config) {
+    private fun applyConfigAndRefreshMenu(config: Config = Config.INS) {
         ApplicationState.applyConfig(config)
-        FloatRingWindow.update(layoutChange = true)
-        refreshData()
+        refreshMenu()
     }
 
-    private fun refreshData() {
+    private fun refreshMenu() {
         menu_view.menu.findItem(R.id.menu_color_mode).title = getString(R.string.color_mode) + ": " +
                 resources.getStringArray(R.array.modes_of_color)[Config.INS.colorMode]
         menu_view.menu.findItem(R.id.show_rotated).isChecked = Config.INS.showRotated
@@ -203,7 +199,6 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         menu_view.menu.findItem(R.id.show_battery_saver).isChecked = Config.INS.showBatterySaver
         pageAdapter.getItem(style_view_pager.currentItem).onResume()
         styleButtons[Config.INS.energyType.ordinal].callOnClick()
-        ApplicationState.persistState()
     }
 
     private fun importFromClip(view: View) {
@@ -230,7 +225,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         kotlin.runCatching {
             Config.jsonDeserialize(content)
         }.onSuccess {
-            applyConfig(it)
+            applyConfigAndRefreshMenu(it)
             if (save) {
                 saveConfig(it)
             }

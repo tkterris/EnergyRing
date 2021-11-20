@@ -12,6 +12,7 @@ import cn.vove7.energy_ring.ui.adapter.ColorsAdapter
 import cn.vove7.energy_ring.util.state.Config
 import cn.vove7.energy_ring.util.antiColor
 import cn.vove7.energy_ring.util.pickColor
+import cn.vove7.energy_ring.util.state.ApplicationState
 import kotlinx.android.synthetic.main.fragment_double_ring_style.*
 import kotlinx.android.synthetic.main.fragment_double_ring_style.view.*
 
@@ -54,7 +55,7 @@ abstract class BaseStyleFragment : Fragment() {
         size_seek_bar?.progress = Config.INS.size
 
         charging_rotateDuration_seek_bar?.progress = Config.INS.chargingRotateSpeed
-        default_rotateDuration_seek_bar?.progress = Config.INS.dischargingRotateSpeed
+        discharging_rotateDuration_seek_bar?.progress = Config.INS.dischargingRotateSpeed
 
         spacing_seek_bar?.progress = Config.INS.spacingWidthF
     }
@@ -67,51 +68,51 @@ abstract class BaseStyleFragment : Fragment() {
                 bg_color_view.setBackgroundColor(c)
                 bg_color_view.setTextColor(c.antiColor)
                 Config.INS.bgColor = c
-                FloatRingWindow.update(layoutChange = true)
+                ApplicationState.applyConfig()
             }
         }
         charging_rotateDuration_seek_bar?.onStop { progress ->
             Config.INS.chargingRotateSpeed = progress
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
-        default_rotateDuration_seek_bar?.onStop { progress ->
+        discharging_rotateDuration_seek_bar?.onStop { progress ->
             Config.INS.dischargingRotateSpeed = progress
             Log.d("Debug :", "listenSeekBar  ---->$progress ${Config.INS.dischargingRotateSpeed}")
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
         strokeWidth_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.INS.strokeWidth = progress.toFloat()
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
         strokeWidth_seek_bar?.onStart {
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
         posx_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.INS.posXf = progress
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
         posy_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.INS.posYf = progress
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
         size_seek_bar?.onStart {
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
         size_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.INS.size = progress
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
         spacing_seek_bar?.onStart {
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
         spacing_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
             Config.INS.spacingWidthF = progress
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
     } ?: Unit
 

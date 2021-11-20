@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.vove7.energy_ring.R
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.util.pickColor
+import cn.vove7.energy_ring.util.state.ApplicationState
 
 /**
  * # ColorsAdapter
@@ -65,7 +66,7 @@ class ColorsAdapter(val getColors: () -> IntArray, val setColors: (IntArray) -> 
                     kotlin.runCatching {
                         setColors(cs.toMutableList().apply { removeAt(position) }.toIntArray())
                         notifyDataSetChanged()
-                        FloatRingWindow.update(layoutChange = true)
+                        ApplicationState.applyConfig()
                     }
                     true
                 }
@@ -89,7 +90,7 @@ class ColorsAdapter(val getColors: () -> IntArray, val setColors: (IntArray) -> 
                 setColors(getColors().also { it[pos] = c })
                 notifyDataSetChanged()
             }
-            FloatRingWindow.update(layoutChange = true)
+            ApplicationState.applyConfig()
         }
     }
 

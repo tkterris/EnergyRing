@@ -33,8 +33,8 @@ class Config(
     var showRotated: Boolean = false,
     var showScreenOff: Boolean = false,
     var showBatterySaver: Boolean = false,
-    var chargingRotateSpeed: Long = 8,
-    var dischargingRotateSpeed: Long = 180,
+    var chargingRotateSpeed: Int = 180,
+    var dischargingRotateSpeed: Int = 8,
     var colorsDischarging: IntArray = intArrayOf(
         "#ff00e676".asColor,
         "#ff64dd17".asColor
@@ -54,25 +54,25 @@ class Config(
         set(value) {
             sizef = value.toFloat() / screenWidth
         }
-    val rotationSpeed get() : Long = when {
+    val rotationSpeed get() : Int = when {
         PowerEventReceiver.isCharging -> chargingRotateSpeed
         !PowerEventReceiver.isCharging && ScreenListener.screenOn -> dischargingRotateSpeed
-        else -> 0L
+        else -> 0
     }
 
     fun copy() : Config {
-        val copy : Config = jsonDeserialize(jsonSerialize(this))
+        val copy : Config = jsonDeserialize(jsonSerialize())
         copy.buildModel = Build.MODEL
         copy.buildId = Build.ID
         return copy
     }
 
+    fun jsonSerialize() : String {
+        return GsonBuilder().setPrettyPrinting().create().toJson(this)
+    }
+
     companion object {
         val INS : Config get() = ApplicationState.activeConfig
-
-        fun jsonSerialize(config: Config) : String {
-            return GsonBuilder().setPrettyPrinting().create().toJson(config)
-        }
 
         fun jsonDeserialize(json: String) : Config {
             return Gson().fromJson(json, Config::class.java)

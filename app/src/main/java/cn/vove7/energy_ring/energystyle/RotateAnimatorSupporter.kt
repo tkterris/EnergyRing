@@ -36,7 +36,6 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
 
     @CallSuper
     override fun reloadAnimation() {
-        //TODO: possible performance improvements here?
         if (!FloatRingWindow.visible) {
             rotateAnimator.cancel()
             return
@@ -45,7 +44,7 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
         val rotationSpeed = Config.INS.rotationSpeed
 
         Log.d(TAG, "Updating rotation speed  ----> speed: $rotationSpeed")
-        if (rotationSpeed == 0L) {
+        if (rotationSpeed == 0) {
             rotateAnimator.cancel()
             rotateAnimator.setCurrentFraction(0f)
         } else {
@@ -53,8 +52,7 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
                 = DateUtils.SECOND_IN_MILLIS * DEGREES / (rotationSpeed * ROTATE_SPEED_SCALE)
             if (rotationDuration != rotateAnimator.duration) {
                 val animatedFraction = rotateAnimator.animatedFraction
-                rotateAnimator.setDuration(rotationDuration.toLong())
-                    .setCurrentFraction(animatedFraction)
+                rotateAnimator.setDuration(rotationDuration).setCurrentFraction(animatedFraction)
             }
             if (!rotateAnimator.isStarted) {
                 rotateAnimator.start()
