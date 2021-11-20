@@ -107,7 +107,7 @@
     void *(**On*Event);
 }
 
--keep class cn.vove7.energy_ring.util.Config {*;}
+-keep class cn.vove7.energy_ring.util.state.Config {*;}
 -keep class cn.vove7.energy_ring.util.ConfigInfo {*;}
 -keep class cn.vove7.smartkey.** {*;}
 

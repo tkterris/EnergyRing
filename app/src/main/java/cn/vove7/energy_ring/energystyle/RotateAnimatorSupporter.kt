@@ -1,6 +1,7 @@
 package cn.vove7.energy_ring.energystyle
 
 import android.animation.ValueAnimator
+import android.text.format.DateUtils
 import android.util.Log
 import android.view.animation.LinearInterpolator
 import androidx.annotation.CallSuper
@@ -17,6 +18,8 @@ import cn.vove7.energy_ring.util.state.Config
 abstract class RotateAnimatorSupporter : EnergyStyle {
 
     val TAG : String = this::class.java.simpleName
+    val DEGREES = 360L
+    val ROTATE_SPEED_SCALE = 1L
 
     companion object {
     }
@@ -39,17 +42,15 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
             return
         }
 
-        val rotationDuration = when {
-            PowerEventReceiver.isCharging -> Config.INS.chargingRotateDuration
-            Config.INS.autoRotateDisCharging -> Config.INS.dischargingRotateDuration
-            else -> 0L
-        }
+        val rotationSpeed = Config.INS.rotationSpeed
 
-        Log.d(TAG, "Updating rotation duration  ----> dur: $rotationDuration")
-        if (rotationDuration == 0L) {
+        Log.d(TAG, "Updating rotation speed  ----> speed: $rotationSpeed")
+        if (rotationSpeed == 0L) {
             rotateAnimator.cancel()
             rotateAnimator.setCurrentFraction(0f)
         } else {
+            val rotationDuration
+                = DateUtils.SECOND_IN_MILLIS * DEGREES / (rotationSpeed * ROTATE_SPEED_SCALE)
             if (rotationDuration != rotateAnimator.duration) {
                 val animatedFraction = rotateAnimator.animatedFraction
                 rotateAnimator.setDuration(rotationDuration.toLong())

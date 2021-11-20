@@ -34,8 +34,8 @@
     <string name="multi_color_setting_charging">Color setting while charging (long press to delete)</string>
     <string name="single_color_setting">Color setting</string>
     <string name="ring_bg_color">Background color</string>
-    <string name="rotate_speed_when_charging">Speed [when charging]</string>
-    <string name="rotate_speed_not_charging">Speed [not charged, left most not rotating]</string>
+    <string name="charge_rotate_speed">Rotation speed when charging</string>
+    <string name="discharge_rotate_speed">Rotation speed when discharging</string>
     <string name="save_current_config">Save current configuration</string>
     <string name="welcome_to_share_on_comment_area">Welcome to the comments section</string>
     <string name="display_only_this_model">Display this model only</string>

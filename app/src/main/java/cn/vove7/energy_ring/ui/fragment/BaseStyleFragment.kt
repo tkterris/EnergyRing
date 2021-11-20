@@ -53,9 +53,8 @@ abstract class BaseStyleFragment : Fragment() {
         posy_seek_bar?.progress = Config.INS.posYf
         size_seek_bar?.progress = Config.INS.size
 
-        charging_rotateDuration_seek_bar?.progress = (charging_rotateDuration_seek_bar.maxVal + 1 - Config.INS.chargingRotateDuration / 1000)
-        default_rotateDuration_seek_bar?.progress = (default_rotateDuration_seek_bar.maxVal + default_rotateDuration_seek_bar.minVal -
-                (Config.INS.dischargingRotateDuration) / 1000)
+        charging_rotateDuration_seek_bar?.progress = Config.INS.chargingRotateSpeed
+        default_rotateDuration_seek_bar?.progress = Config.INS.dischargingRotateSpeed
 
         spacing_seek_bar?.progress = Config.INS.spacingWidthF
     }
@@ -72,12 +71,12 @@ abstract class BaseStyleFragment : Fragment() {
             }
         }
         charging_rotateDuration_seek_bar?.onStop { progress ->
-            Config.INS.chargingRotateDuration = (charging_rotateDuration_seek_bar.maxVal + 1 - progress) * 1000
+            Config.INS.chargingRotateSpeed = progress
             FloatRingWindow.update(layoutChange = true)
         }
-        default_rotateDuration_seek_bar?.onStop { progress -> //[60,180]
-            Config.INS.dischargingRotateDuration = (default_rotateDuration_seek_bar.maxVal - (progress - default_rotateDuration_seek_bar.minVal)) * 1000
-            Log.d("Debug :", "listenSeekBar  ---->$progress ${Config.INS.dischargingRotateDuration}")
+        default_rotateDuration_seek_bar?.onStop { progress ->
+            Config.INS.dischargingRotateSpeed = progress
+            Log.d("Debug :", "listenSeekBar  ---->$progress ${Config.INS.dischargingRotateSpeed}")
             FloatRingWindow.update(layoutChange = true)
         }
         strokeWidth_seek_bar?.onChange { progress, user ->

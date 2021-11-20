@@ -1,6 +1,9 @@
 package cn.vove7.energy_ring.util.state
 
 import android.os.Build
+import android.os.PowerManager
+import cn.vove7.energy_ring.listener.PowerEventReceiver
+import cn.vove7.energy_ring.listener.ScreenListener
 import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.util.asColor
 import cn.vove7.energy_ring.util.screenHeight
@@ -15,24 +18,24 @@ import com.google.gson.GsonBuilder
  * 2020/5/8
  */
 class Config(
-        var buildModel: String = Build.MODEL,
-        var buildId: String = Build.ID,
-        var posXf: Int = 148,
-        var posYf: Int = 22,
-        var strokeWidth: Float = 12f,
-        var sizef: Float = 0.06736f,
-        var energyType: ShapeType = ShapeType.RING,
-        var spacingWidthF: Int = 10,
-        var bgColor: Int = "#a0fffde7".asColor,
-        var doubleRingChargingIndex: Int = 0,
-        var secondaryRingFeature: Int = 0,
-        var colorMode: Int = 1,
-        var showRotated: Boolean = false,
-        var showScreenOff: Boolean = false,
-        var showBatterySaver: Boolean = false,
-        var chargingRotateDuration: Int = 3000,
-        var dischargingRotateDuration: Int = 180000,
-        var colorsDischarging: IntArray = intArrayOf(
+    var buildModel: String = Build.MODEL,
+    var buildId: String = Build.ID,
+    var posXf: Int = 148,
+    var posYf: Int = 22,
+    var strokeWidth: Float = 12f,
+    var sizef: Float = 0.06736f,
+    var energyType: ShapeType = ShapeType.RING,
+    var spacingWidthF: Int = 10,
+    var bgColor: Int = "#a0fffde7".asColor,
+    var doubleRingChargingIndex: Int = 0,
+    var secondaryRingFeature: Int = 0,
+    var colorMode: Int = 1,
+    var showRotated: Boolean = false,
+    var showScreenOff: Boolean = false,
+    var showBatterySaver: Boolean = false,
+    var chargingRotateSpeed: Long = 8,
+    var dischargingRotateSpeed: Long = 180,
+    var colorsDischarging: IntArray = intArrayOf(
         "#ff00e676".asColor,
         "#ff64dd17".asColor
     ),
@@ -43,7 +46,6 @@ class Config(
 ) {
 
     //helper methods
-    val autoRotateDisCharging get() = dischargingRotateDuration != 180000
     val posX get() = ((posXf / 2000f) * screenWidth).toInt()
     val posY get() = ((posYf / 2000f) * screenHeight).toInt()
     val spacingWidth get() = ((spacingWidthF / 2000f) * screenWidth).toInt()
@@ -52,6 +54,11 @@ class Config(
         set(value) {
             sizef = value.toFloat() / screenWidth
         }
+    val rotationSpeed get() : Long = when {
+        PowerEventReceiver.isCharging -> chargingRotateSpeed
+        !PowerEventReceiver.isCharging && ScreenListener.screenOn -> dischargingRotateSpeed
+        else -> 0L
+    }
 
     fun copy() : Config {
         val copy : Config = jsonDeserialize(jsonSerialize(this))
