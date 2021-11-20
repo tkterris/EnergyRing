@@ -5,7 +5,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.PowerManager
 import cn.vove7.energy_ring.App
-import cn.vove7.energy_ring.floatwindow.FloatRingWindow
+import cn.vove7.energy_ring.util.sendEnergyBroadcast
 
 /**
  * # ScreenListener
@@ -19,16 +19,13 @@ object ScreenListener : EnergyRingBroadcastReceiver() {
         val intentFilter: IntentFilter = IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_OFF)
             addAction(Intent.ACTION_SCREEN_ON)
-            addAction(Intent.ACTION_USER_PRESENT)
-            addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED)
         }
         App.INS.registerReceiver(this, intentFilter)
     }
 
     val screenOn: Boolean get() = App.powerManager.isInteractive
-    val screenLocked: Boolean = App.keyguardManager.isDeviceLocked
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        FloatRingWindow.update()
+        sendEnergyBroadcast(BroadcastActions.DISPLAY_UPDATE)
     }
 }

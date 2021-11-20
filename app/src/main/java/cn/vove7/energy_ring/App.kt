@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.PowerManager
 import android.widget.Toast
 import androidx.annotation.StringRes
-import cn.vove7.smartkey.android.AndroidSettings
 
 /**
  * Created by 11324 on 2020/5/8

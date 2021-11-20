@@ -92,6 +92,10 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
                 Config.INS.showBatterySaver = !Config.INS.showBatterySaver
                 item.isChecked = Config.INS.showBatterySaver
             }
+            R.id.hide_battery_aod -> {
+                Config.INS.hideBatteryAod = !Config.INS.hideBatteryAod
+                item.isChecked = Config.INS.hideBatteryAod
+            }
             R.id.show_screen_off -> {
                 Config.INS.showScreenOff = !Config.INS.showScreenOff
                 item.isChecked = Config.INS.showScreenOff
@@ -197,6 +201,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         menu_view.menu.findItem(R.id.show_rotated).isChecked = Config.INS.showRotated
         menu_view.menu.findItem(R.id.show_screen_off).isChecked = Config.INS.showScreenOff
         menu_view.menu.findItem(R.id.show_battery_saver).isChecked = Config.INS.showBatterySaver
+        menu_view.menu.findItem(R.id.hide_battery_aod).isChecked = Config.INS.hideBatteryAod
         pageAdapter.getItem(style_view_pager.currentItem).onResume()
         styleButtons[Config.INS.energyType.ordinal].callOnClick()
     }

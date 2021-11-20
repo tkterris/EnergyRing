@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId "cn.vove7.energy_ring"
-        minSdkVersion 23
+        minSdkVersion 30
         targetSdkVersion 30
         versionCode 20504
         versionName "2.5.4"
@@ -50,8 +50,6 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:input:3.3.0'
     implementation 'com.afollestad.material-dialogs:color:3.3.0'
     implementation 'com.afollestad.material-dialogs:lifecycle:3.3.0'
-
-    implementation 'com.github.Vove7.SmartKey:smartkey-android:6.3.1'
 
     testImplementation 'junit:junit:4.13'
 }

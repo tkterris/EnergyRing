@@ -3,10 +3,8 @@ package cn.vove7.energy_ring.util.state
 import android.content.Context
 import android.content.SharedPreferences
 import cn.vove7.energy_ring.App
-import cn.vove7.energy_ring.floatwindow.FloatRingWindow
-import cn.vove7.energy_ring.service.AccService
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import cn.vove7.energy_ring.listener.BroadcastActions
+import cn.vove7.energy_ring.util.sendEnergyBroadcast
 
 /**
  * # Config
@@ -47,7 +45,7 @@ object ApplicationState {
     fun applyConfig(newConfig : Config = Config.INS) {
         activeConfig = if (activeConfig != newConfig) newConfig.copy() else activeConfig
         persistState()
-        FloatRingWindow.update(layoutChange = true)
+        sendEnergyBroadcast(BroadcastActions.DISPLAY_REFRESH)
     }
 
     private fun sharedPreferences() : SharedPreferences {

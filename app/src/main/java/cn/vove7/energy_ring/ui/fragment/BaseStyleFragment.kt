@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
-import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.ui.adapter.ColorsAdapter
 import cn.vove7.energy_ring.util.state.Config
 import cn.vove7.energy_ring.util.antiColor

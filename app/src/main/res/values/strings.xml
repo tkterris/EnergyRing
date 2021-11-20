@@ -30,6 +30,7 @@
     <string name="show_rotated">Show when rotated</string>
     <string name="show_screen_off">Show when screen is off</string>
     <string name="show_battery_saver">Show in battery saver mode</string>
+    <string name="hide_battery_aod">Hide battery percentage in Always On Display</string>
     <string name="multi_color_setting">Color setting (long press to delete)</string>
     <string name="multi_color_setting_charging">Color setting while charging (long press to delete)</string>
     <string name="single_color_setting">Color setting</string>

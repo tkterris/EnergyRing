@@ -5,8 +5,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.view.Surface
 import cn.vove7.energy_ring.App
-import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.util.display
+import cn.vove7.energy_ring.util.sendEnergyBroadcast
 
 
 /**
@@ -30,7 +30,7 @@ object RotationListener : EnergyRingBroadcastReceiver() {
 
         if (rotation != newRotation) {
             rotation = newRotation
-            FloatRingWindow.update()
+            sendEnergyBroadcast(BroadcastActions.DISPLAY_UPDATE)
         }
     }
 }

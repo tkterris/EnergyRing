@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import cn.vove7.energy_ring.R
-import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.util.pickColor
 import cn.vove7.energy_ring.util.state.ApplicationState
 

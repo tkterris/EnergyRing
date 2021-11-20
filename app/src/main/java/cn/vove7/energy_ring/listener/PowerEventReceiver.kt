@@ -7,9 +7,9 @@ import android.os.BatteryManager
 import android.os.PowerManager
 import android.util.Log
 import cn.vove7.energy_ring.App
-import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.util.initialBatteryLevel
 import cn.vove7.energy_ring.util.initialIsCharging
+import cn.vove7.energy_ring.util.sendEnergyBroadcast
 
 /**
  * # PowerEventReceiver
@@ -44,12 +44,12 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
             Intent.ACTION_POWER_CONNECTED -> {//连接充电器
                 Log.d("Debug :", "onReceive  ----> onCharging")
                 isCharging = true
-                FloatRingWindow.update()
+                sendEnergyBroadcast(BroadcastActions.DISPLAY_UPDATE)
             }
             Intent.ACTION_POWER_DISCONNECTED -> {//断开
                 Log.d("Debug :", "onReceive  ----> onDisCharging")
                 isCharging = false
-                FloatRingWindow.update()
+                sendEnergyBroadcast(BroadcastActions.DISPLAY_UPDATE)
             }
             Intent.ACTION_BATTERY_CHANGED -> {
                 val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) //电量的刻度
@@ -58,12 +58,12 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
                 if (l != batteryLevel) {
                     batteryLevel = l
                     Log.d("Debug :", "onReceive  ----> ACTION_BATTERY_CHANGED $l")
-                    FloatRingWindow.update()
+                    sendEnergyBroadcast(BroadcastActions.DISPLAY_UPDATE)
                 }
             }
             PowerManager.ACTION_POWER_SAVE_MODE_CHANGED -> {
                 Log.d("Debug :", "onReceive  ----> ACTION_POWER_SAVE_MODE_CHANGED")
-                FloatRingWindow.update()
+                sendEnergyBroadcast(BroadcastActions.DISPLAY_UPDATE)
             }
         }
 

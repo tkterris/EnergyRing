@@ -18,6 +18,11 @@
         android:title="@string/show_battery_saver"/>
 
     <item
+        android:id="@+id/hide_battery_aod"
+        android:checkable="true"
+        android:title="@string/hide_battery_aod"/>
+
+    <item
         android:id="@+id/show_screen_off"
         android:checkable="true"
         android:title="@string/show_screen_off" />

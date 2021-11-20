@@ -2,7 +2,6 @@ package cn.vove7.energy_ring.ui.fragment
 
 import android.view.View
 import cn.vove7.energy_ring.R
-import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.util.state.ApplicationState
 import cn.vove7.energy_ring.util.state.Config
 import com.afollestad.materialdialogs.MaterialDialog

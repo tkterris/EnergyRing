@@ -5,8 +5,7 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.view.animation.LinearInterpolator
 import androidx.annotation.CallSuper
-import cn.vove7.energy_ring.floatwindow.FloatRingWindow
-import cn.vove7.energy_ring.listener.PowerEventReceiver
+import cn.vove7.energy_ring.listener.FloatRingWindow
 import cn.vove7.energy_ring.util.state.Config
 
 /**
@@ -77,11 +76,13 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
     override fun onHide() {
         Log.d(TAG, "onHide  ----> $TAG")
         rotateAnimator.cancel()
+        rotateAnimator.setCurrentFraction(0f)
     }
 
     @CallSuper
     override fun onRemove() {
         Log.d(TAG, "onRemove  ----> $TAG")
         rotateAnimator.cancel()
+        rotateAnimator.setCurrentFraction(0f)
     }
 }

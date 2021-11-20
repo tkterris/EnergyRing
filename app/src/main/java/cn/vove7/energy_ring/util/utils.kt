@@ -127,7 +127,7 @@ val subColors
             intArrayOf("#EFEBE9".asColor, "#D7CCC8".asColor, "#BCAAA4".asColor, "#A1887F".asColor, "#8D6E63".asColor, "#795548".asColor, "#6D4C41".asColor, "#5D4037".asColor, "#4E342E".asColor, "#3E2723".asColor),
             intArrayOf("#FAFAFA".asColor, "#F5F5F5".asColor, "#EEEEEE".asColor, "#E0E0E0".asColor, "#BDBDBD".asColor, "#9E9E9E".asColor, "#757575".asColor, "#616161".asColor, "#424242".asColor, "#212121".asColor),
             intArrayOf("#ECEFF1".asColor, "#CFD8DC".asColor, "#B0BEC5".asColor, "#90A4AE".asColor, "#78909C".asColor, "#607D8B".asColor, "#546E7A".asColor, "#455A64".asColor, "#37474F".asColor, "#263238".asColor),
-            intArrayOf("#000000".asColor), intArrayOf("#FFFFFF".asColor)
+            intArrayOf("#000000".asColor, "#00000000".asColor), intArrayOf("#FFFFFF".asColor, "#00000000".asColor)
 
     )
 
@@ -195,5 +195,12 @@ fun isTransparent(color: Int): Boolean {
         Color.valueOf(color).alpha().equals(0f)
     } else {
         false
+    }
+}
+
+fun sendEnergyBroadcast(action : String) {
+    Intent().also { intent ->
+        intent.action = action
+        App.INS.sendBroadcast(intent)
     }
 }

@@ -6,10 +6,8 @@ import android.provider.Settings
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import cn.vove7.energy_ring.App
-import cn.vove7.energy_ring.floatwindow.FloatRingWindow
-import cn.vove7.energy_ring.listener.PowerEventReceiver
-import cn.vove7.energy_ring.listener.RotationListener
-import cn.vove7.energy_ring.listener.ScreenListener
+import cn.vove7.energy_ring.listener.*
+import cn.vove7.energy_ring.util.sendEnergyBroadcast
 import cn.vove7.energy_ring.util.state.ApplicationState
 
 /**
@@ -42,6 +40,8 @@ class AccService : AccessibilityService() {
         ScreenListener.start()
         PowerEventReceiver.start()
         RotationListener.start()
+        FloatRingWindow.start()
+        HideBatteryReceiver.start()
         //TODO: fix issue with service startup that requires this workaround
         Handler().postDelayed({
             ApplicationState.applyConfig()
@@ -54,10 +54,12 @@ class AccService : AccessibilityService() {
         Log.d("Debug", "AccService destroyed")
         running = false
 
+        sendEnergyBroadcast(BroadcastActions.DISPLAY_UPDATE)
         ScreenListener.stop()
         PowerEventReceiver.stop()
         RotationListener.stop()
-        FloatRingWindow.update()
+        FloatRingWindow.stop()
+        HideBatteryReceiver.stop()
 
         super.onDestroy()
     }

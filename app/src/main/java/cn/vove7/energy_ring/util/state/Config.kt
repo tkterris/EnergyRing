@@ -33,6 +33,7 @@ class Config(
     var showRotated: Boolean = false,
     var showScreenOff: Boolean = false,
     var showBatterySaver: Boolean = false,
+    var hideBatteryAod: Boolean = false,
     var chargingRotateSpeed: Int = 180,
     var dischargingRotateSpeed: Int = 8,
     var colorsDischarging: IntArray = intArrayOf(

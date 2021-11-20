@@ -1,6 +1,10 @@
-package cn.vove7.energy_ring.floatwindow
+package cn.vove7.energy_ring.listener
 
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.PixelFormat
+import android.os.PowerManager
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -11,9 +15,6 @@ import cn.vove7.energy_ring.energystyle.DoubleRingStyle
 import cn.vove7.energy_ring.energystyle.EnergyStyle
 import cn.vove7.energy_ring.energystyle.PillStyle
 import cn.vove7.energy_ring.energystyle.RingStyle
-import cn.vove7.energy_ring.listener.PowerEventReceiver
-import cn.vove7.energy_ring.listener.RotationListener
-import cn.vove7.energy_ring.listener.ScreenListener
 import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.service.AccService
 import cn.vove7.energy_ring.util.*
@@ -27,7 +28,7 @@ import cn.vove7.energy_ring.util.state.Config
  * @author Vove
  * 2020/5/8
  */
-object FloatRingWindow {
+object FloatRingWindow : EnergyRingBroadcastReceiver() {
 
     private val displayEnergyStyleDelegate = weakLazy {
         buildEnergyStyle()
@@ -67,7 +68,20 @@ object FloatRingWindow {
         }
     }
 
-    @Synchronized fun update(layoutChange : Boolean = false) {
+    override fun start() {
+        val intentFilter: IntentFilter = IntentFilter().apply {
+            addAction(BroadcastActions.DISPLAY_UPDATE)
+            addAction(BroadcastActions.DISPLAY_REFRESH)
+        }
+        App.INS.registerReceiver(this, intentFilter)
+    }
+
+    override fun onReceive(context: Context?, intent: Intent?) {
+        Log.d("FloatRingWindow","Broadcast received : " + intent?.action)
+        update(layoutChange = intent?.action.equals(BroadcastActions.DISPLAY_REFRESH))
+    }
+
+    @Synchronized private fun update(layoutChange : Boolean = false) {
         if (layoutChange) {
             refreshLayout()
         }
