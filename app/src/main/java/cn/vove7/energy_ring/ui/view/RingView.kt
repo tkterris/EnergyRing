@@ -5,8 +5,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import cn.vove7.energy_ring.BuildConfig
-import cn.vove7.energy_ring.util.Config
+import cn.vove7.energy_ring.util.state.Config
 import kotlin.math.min
 
 

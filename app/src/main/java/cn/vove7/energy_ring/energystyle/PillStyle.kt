@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.FrameLayout
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.ui.view.PillView
-import cn.vove7.energy_ring.util.Config
+import cn.vove7.energy_ring.util.state.Config
 import cn.vove7.energy_ring.util.getColorByRange
 import cn.vove7.energy_ring.util.weakLazy
 

@@ -1,7 +1,6 @@
 package cn.vove7.energy_ring.util
 
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
@@ -9,7 +8,6 @@ import android.graphics.Color
 import android.hardware.display.DisplayManager
 import android.os.BatteryManager
 import android.os.Build
-import android.provider.Settings
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
@@ -19,6 +17,7 @@ import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.R
 import cn.vove7.energy_ring.listener.PowerEventReceiver
 import cn.vove7.energy_ring.service.AccService
+import cn.vove7.energy_ring.util.state.Config
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
 import com.google.android.material.animation.ArgbEvaluatorCompat

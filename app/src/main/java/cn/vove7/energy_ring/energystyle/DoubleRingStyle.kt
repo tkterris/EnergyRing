@@ -8,7 +8,7 @@ import cn.vove7.energy_ring.monitor.DeviceMonitor
 import cn.vove7.energy_ring.monitor.MemoryMonitor
 import cn.vove7.energy_ring.monitor.MonitorListener
 import cn.vove7.energy_ring.ui.view.RingView
-import cn.vove7.energy_ring.util.Config
+import cn.vove7.energy_ring.util.state.Config
 import cn.vove7.energy_ring.util.getColorByRange
 import cn.vove7.energy_ring.util.weakLazy
 

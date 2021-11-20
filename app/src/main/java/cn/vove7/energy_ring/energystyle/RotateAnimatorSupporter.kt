@@ -1,13 +1,12 @@
 package cn.vove7.energy_ring.energystyle
 
-import android.animation.Animator
 import android.animation.ValueAnimator
 import android.util.Log
 import android.view.animation.LinearInterpolator
 import androidx.annotation.CallSuper
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
 import cn.vove7.energy_ring.listener.PowerEventReceiver
-import cn.vove7.energy_ring.util.Config
+import cn.vove7.energy_ring.util.state.Config
 
 /**
  * # RotateAnimatorSupporter

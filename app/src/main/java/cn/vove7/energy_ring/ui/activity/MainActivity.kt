@@ -1,6 +1,5 @@
 package cn.vove7.energy_ring.ui.activity
 
-import android.annotation.SuppressLint
 import android.content.*
 import android.net.Uri
 import android.os.Build
@@ -17,14 +16,14 @@ import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.service.AccService
 import cn.vove7.energy_ring.ui.adapter.StylePagerAdapter
 import cn.vove7.energy_ring.util.*
+import cn.vove7.energy_ring.util.state.ApplicationState
+import cn.vove7.energy_ring.util.state.Config
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItems
 import com.afollestad.materialdialogs.list.listItemsMultiChoice
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
 import kotlinx.android.synthetic.main.activity_main.*
 

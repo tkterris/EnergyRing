@@ -17,6 +17,8 @@ import cn.vove7.energy_ring.listener.ScreenListener
 import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.service.AccService
 import cn.vove7.energy_ring.util.*
+import cn.vove7.energy_ring.util.state.ApplicationState
+import cn.vove7.energy_ring.util.state.Config
 
 
 /**

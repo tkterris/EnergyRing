@@ -1,8 +1,5 @@
-package cn.vove7.energy_ring.util
+package cn.vove7.energy_ring.util.state
 
-import android.os.Build
-import cn.vove7.energy_ring.App
-import cn.vove7.energy_ring.model.ShapeType
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
