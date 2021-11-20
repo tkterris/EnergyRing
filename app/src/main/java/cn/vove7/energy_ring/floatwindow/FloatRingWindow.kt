@@ -31,7 +31,7 @@ object FloatRingWindow {
         buildEnergyStyle()
     }
 
-    private fun buildEnergyStyle(): EnergyStyle = when (Config.energyType) {
+    private fun buildEnergyStyle(): EnergyStyle = when (Config.INS.energyType) {
         ShapeType.RING -> RingStyle()
         ShapeType.DOUBLE_RING -> DoubleRingStyle()
         ShapeType.PILL -> PillStyle()
@@ -46,7 +46,7 @@ object FloatRingWindow {
     private val layoutParams: LayoutParams
         get() = LayoutParams(
                 -2, -2,
-                Config.posX, Config.posY,
+                Config.INS.posX, Config.INS.posY,
                 LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
                 LayoutParams.FLAG_NOT_TOUCH_MODAL or
                         LayoutParams.FLAG_NOT_FOCUSABLE or
@@ -99,7 +99,7 @@ object FloatRingWindow {
     private fun show() {
         try {
             visible = true
-            displayEnergyStyle.update(batteryLevel)
+            displayEnergyStyle.update(PowerEventReceiver.batteryLevel)
             displayEnergyStyle.reloadAnimation()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -115,17 +115,18 @@ object FloatRingWindow {
     }
 
     private fun canShow(): Boolean {
-        val cond1 = !Config.autoHideRotate || !RotationListener.isRotated
-        val cond3 = !Config.powerSaveHide || !PowerEventReceiver.powerSaveMode
-        val cond4 = !Config.screenOffHide || ScreenListener.screenOn
-        val fullyTransparent = isTransparent(Config.ringBgColor)
-                && isTransparent(getColorByRange(batteryLevel))
+        val cond1 = Config.INS.showRotated || !RotationListener.isRotated
+        val cond3 = Config.INS.showBatterySaver || !PowerEventReceiver.powerSaveMode
+        val cond4 = Config.INS.showScreenOff || ScreenListener.screenOn
+        val fullyTransparent = isTransparent(Config.INS.bgColor)
+                && isTransparent(getColorByRange(PowerEventReceiver.batteryLevel))
         val serviceRunning = AccService.running
+        val enabled = ApplicationState.enabled
 
         Log.d("Debug :", "canShow  ----> 旋转: $cond1 省电: $cond3 screen on: $cond4 " +
-                "transparent: $fullyTransparent service running: $serviceRunning")
+                "transparent: $fullyTransparent service: $serviceRunning enabled : $enabled")
 
-        return cond1 && cond3 && cond4 && !fullyTransparent && serviceRunning
+        return cond1 && cond3 && cond4 && !fullyTransparent && serviceRunning && enabled
 
     }
 

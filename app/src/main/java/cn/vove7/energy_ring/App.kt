@@ -34,7 +34,6 @@ class App : Application() {
 
     override fun onCreate() {
         INS = this
-        AndroidSettings.init(this)
         super.onCreate()
 
     }

@@ -8,19 +8,19 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/rotate_auto_hide"
+        android:id="@+id/show_rotated"
         android:checkable="true"
-        android:title="@string/auto_hide_on_rotate" />
+        android:title="@string/show_rotated" />
 
     <item
-        android:id="@+id/auto_hide_in_power_save_mode"
+        android:id="@+id/show_battery_saver"
         android:checkable="true"
-        android:title="@string/auto_hide_in_power_saving_mode"/>
+        android:title="@string/show_battery_saver"/>
 
     <item
-        android:id="@+id/screen_off_auto_hide"
+        android:id="@+id/show_screen_off"
         android:checkable="true"
-        android:title="@string/auto_hide_on_screen_off" />
+        android:title="@string/show_screen_off" />
 
     <item
         android:id="@+id/menu_color_mode"

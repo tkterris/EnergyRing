@@ -27,9 +27,9 @@
     <string name="author">Author</string>
     <string name="no_browser_available">No browser available</string>
     <string name="alipay_is_not_installed">Alipay is not installed.</string>
-    <string name="auto_hide_on_rotate">[screen orientation switch] auto hide</string>
-    <string name="auto_hide_on_fullscreen">[full screen] auto hide</string>
-    <string name="auto_hide_on_screen_off">Hide when screen is off (accessibility service required to disable)</string>
+    <string name="show_rotated">Show when rotated</string>
+    <string name="show_screen_off">Show when screen is off</string>
+    <string name="show_battery_saver">Show in battery saver mode</string>
     <string name="multi_color_setting">Color setting (long press to delete)</string>
     <string name="multi_color_setting_charging">Color setting while charging (long press to delete)</string>
     <string name="single_color_setting">Color setting</string>
@@ -80,7 +80,6 @@
     <string name="import_failed">Import failed</string>
     <string name="import_config_hint">Format error, please keep only the contents in {…}</string>
     <string name="screenoff_reminder_hint">Screen-off Reminder\n It\'s need to notification permission. When the breathing light flashes, double-click to light up the screen. \n When you double-click the bright screen, the face unlock may not work.</string>
-    <string name="auto_hide_in_power_saving_mode">Auto hide in power-saving-mode</string>
 
     <string-array name="way_of_support">
         <item>Alipay</item>

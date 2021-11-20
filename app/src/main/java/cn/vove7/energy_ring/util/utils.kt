@@ -142,17 +142,16 @@ val Int.antiColor: Int
         } else anc
     }
 
-val isOnCharging: Boolean
-    get() = {
+val initialIsCharging: Boolean
+    get() {
         val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val intent = App.INS.registerReceiver(null, filter)
         val status = intent?.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN)
-        val i = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
-        Log.d("---", "isCharging ---> $i")
-        i
-    }.invoke()
+        Log.d("---", "battery manager status ---> $status")
+        return status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
+    }
 
-val batteryLevel: Float
+val initialBatteryLevel: Float
     get() {
         val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val intent = App.INS.registerReceiver(null, filter)
@@ -165,15 +164,15 @@ val batteryLevel: Float
 val aev = ArgbEvaluatorCompat()
 
 fun getColorByRange(progress: Float): Int {
-    val colors = getColorsToUse(Config.colorsDischarging, Config.colorsCharging)
+    val colors = getColorsToUse(Config.INS.colorsDischarging, Config.INS.colorsCharging)
     if (progress < 0) {
         return colors[0]
     }
-    val perP = 1f / (if (Config.colorMode == 0) colors.size - 1 else colors.size)
+    val perP = 1f / (if (Config.INS.colorMode == 0) colors.size - 1 else colors.size)
     (0 until colors.size - 1).forEach {
         if (progress >= it * perP && progress < perP * (it + 1)) {
             Log.d("Debug :", "getColorByRange  ----> $progress $perP $it")
-            return if (Config.colorMode == 0) aev.evaluate((progress - it * perP) / perP, colors[it], colors[it + 1])
+            return if (Config.INS.colorMode == 0) aev.evaluate((progress - it * perP) / perP, colors[it], colors[it + 1])
             else colors[it]
         }
     }
@@ -193,9 +192,9 @@ fun inTimeRange(h: Int, b: Int, e: Int): Boolean {
 }
 
 fun isTransparent(color: Int): Boolean {
-    if (Build.VERSION.SDK_INT >= 26) {
-        return Color.valueOf(color).alpha().equals(0f)
+    return if (Build.VERSION.SDK_INT >= 26) {
+        Color.valueOf(color).alpha().equals(0f)
     } else {
-        return false
+        false
     }
 }

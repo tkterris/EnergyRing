@@ -30,8 +30,8 @@ abstract class BaseStyleFragment : Fragment() {
 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        color_list.adapter = ColorsAdapter({ Config.colorsDischarging }, { Config.colorsDischarging = it })
-        color_list_charging.adapter = ColorsAdapter({ Config.colorsCharging }, { Config.colorsCharging = it })
+        color_list.adapter = ColorsAdapter({ Config.INS.colorsDischarging }, { Config.INS.colorsDischarging = it })
+        color_list_charging.adapter = ColorsAdapter({ Config.INS.colorsCharging }, { Config.INS.colorsCharging = it })
         refreshData()
         listenSeekBar(view)
     }
@@ -43,46 +43,46 @@ abstract class BaseStyleFragment : Fragment() {
 
     @CallSuper
     open fun refreshData() = view.run {
-        bg_color_view?.setBackgroundColor(Config.ringBgColor)
-        bg_color_view?.setTextColor(Config.ringBgColor.antiColor)
+        bg_color_view?.setBackgroundColor(Config.INS.bgColor)
+        bg_color_view?.setTextColor(Config.INS.bgColor.antiColor)
         color_list?.adapter?.notifyDataSetChanged()
         color_list_charging?.adapter?.notifyDataSetChanged()
-        strokeWidth_seek_bar?.progress = Config.strokeWidthF.toInt()
+        strokeWidth_seek_bar?.progress = Config.INS.strokeWidth.toInt()
 
-        posx_seek_bar?.progress = Config.posXf
-        posy_seek_bar?.progress = Config.posYf
-        size_seek_bar?.progress = Config.size
+        posx_seek_bar?.progress = Config.INS.posXf
+        posy_seek_bar?.progress = Config.INS.posYf
+        size_seek_bar?.progress = Config.INS.size
 
-        charging_rotateDuration_seek_bar?.progress = (charging_rotateDuration_seek_bar.maxVal + 1 - Config.chargingRotateDuration / 1000)
+        charging_rotateDuration_seek_bar?.progress = (charging_rotateDuration_seek_bar.maxVal + 1 - Config.INS.chargingRotateDuration / 1000)
         default_rotateDuration_seek_bar?.progress = (default_rotateDuration_seek_bar.maxVal + default_rotateDuration_seek_bar.minVal -
-                (Config.defaultRotateDuration) / 1000)
+                (Config.INS.dischargingRotateDuration) / 1000)
 
-        spacing_seek_bar?.progress = Config.spacingWidthF
+        spacing_seek_bar?.progress = Config.INS.spacingWidthF
     }
 
     @CallSuper
     open fun listenSeekBar(view: View): Unit = view.run {
 
         bg_color_view.setOnClickListener {
-            pickColor(context!!, initColor = Config.ringBgColor) { c ->
+            pickColor(context!!, initColor = Config.INS.bgColor) { c ->
                 bg_color_view.setBackgroundColor(c)
                 bg_color_view.setTextColor(c.antiColor)
-                Config.ringBgColor = c
+                Config.INS.bgColor = c
                 FloatRingWindow.update(layoutChange = true)
             }
         }
         charging_rotateDuration_seek_bar?.onStop { progress ->
-            Config.chargingRotateDuration = (charging_rotateDuration_seek_bar.maxVal + 1 - progress) * 1000
+            Config.INS.chargingRotateDuration = (charging_rotateDuration_seek_bar.maxVal + 1 - progress) * 1000
             FloatRingWindow.update(layoutChange = true)
         }
         default_rotateDuration_seek_bar?.onStop { progress -> //[60,180]
-            Config.defaultRotateDuration = (default_rotateDuration_seek_bar.maxVal - (progress - default_rotateDuration_seek_bar.minVal)) * 1000
-            Log.d("Debug :", "listenSeekBar  ---->$progress ${Config.defaultRotateDuration}")
+            Config.INS.dischargingRotateDuration = (default_rotateDuration_seek_bar.maxVal - (progress - default_rotateDuration_seek_bar.minVal)) * 1000
+            Log.d("Debug :", "listenSeekBar  ---->$progress ${Config.INS.dischargingRotateDuration}")
             FloatRingWindow.update(layoutChange = true)
         }
         strokeWidth_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
-            Config.strokeWidthF = progress.toFloat()
+            Config.INS.strokeWidth = progress.toFloat()
             FloatRingWindow.update(layoutChange = true)
         }
         strokeWidth_seek_bar?.onStart {
@@ -90,12 +90,12 @@ abstract class BaseStyleFragment : Fragment() {
         }
         posx_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
-            Config.posXf = progress
+            Config.INS.posXf = progress
             FloatRingWindow.update(layoutChange = true)
         }
         posy_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
-            Config.posYf = progress
+            Config.INS.posYf = progress
             FloatRingWindow.update(layoutChange = true)
         }
         size_seek_bar?.onStart {
@@ -103,7 +103,7 @@ abstract class BaseStyleFragment : Fragment() {
         }
         size_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
-            Config.size = progress
+            Config.INS.size = progress
             FloatRingWindow.update(layoutChange = true)
         }
         spacing_seek_bar?.onStart {
@@ -111,7 +111,7 @@ abstract class BaseStyleFragment : Fragment() {
         }
         spacing_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
-            Config.spacingWidthF = progress
+            Config.INS.spacingWidthF = progress
             FloatRingWindow.update(layoutChange = true)
         }
     } ?: Unit

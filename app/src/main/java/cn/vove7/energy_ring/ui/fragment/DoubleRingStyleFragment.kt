@@ -23,10 +23,10 @@ class DoubleRingStyleFragment : BaseStyleFragment() {
     override fun refreshData() {
         super.refreshData()
 
-        val fc by lazy { resources.getStringArray(R.array.ring_features)[Config.secondaryRingFeature] }
+        val fc by lazy { resources.getStringArray(R.array.ring_features)[Config.INS.secondaryRingFeature] }
         pick_secondary_ring_func_view?.text = getString(R.string.feature_of_secondary_ring, fc)
 
-        val dir by lazy { resources.getStringArray(R.array.double_ring_battery_direction)[Config.doubleRingChargingIndex] }
+        val dir by lazy { resources.getStringArray(R.array.double_ring_battery_direction)[Config.INS.doubleRingChargingIndex] }
         pick_battery_direction_view?.text = getString(R.string.battery_direction_format, dir)
     }
 
@@ -36,8 +36,8 @@ class DoubleRingStyleFragment : BaseStyleFragment() {
             pick_secondary_ring_func_view.setOnClickListener {
                 MaterialDialog(context).show {
                     listItems(R.array.ring_features, waitForPositiveButton = false) { _, i, _ ->
-                        if (Config.secondaryRingFeature != i) {
-                            Config.secondaryRingFeature = i
+                        if (Config.INS.secondaryRingFeature != i) {
+                            Config.INS.secondaryRingFeature = i
                             val fc = resources.getStringArray(R.array.ring_features)[i]
                             view.pick_secondary_ring_func_view.text = getString(R.string.feature_of_secondary_ring, fc)
                             FloatRingWindow.update(layoutChange = true)
@@ -48,8 +48,8 @@ class DoubleRingStyleFragment : BaseStyleFragment() {
             pick_battery_direction_view.setOnClickListener {
                 MaterialDialog(context).show {
                     listItems(R.array.double_ring_battery_direction, waitForPositiveButton = false) { _, i, _ ->
-                        if (Config.doubleRingChargingIndex != i) {
-                            Config.doubleRingChargingIndex = i
+                        if (Config.INS.doubleRingChargingIndex != i) {
+                            Config.INS.doubleRingChargingIndex = i
                             val dir = resources.getStringArray(R.array.double_ring_battery_direction)[i]
                             view.pick_battery_direction_view?.text = getString(R.string.battery_direction_format, dir)
                             FloatRingWindow.update(layoutChange = true)

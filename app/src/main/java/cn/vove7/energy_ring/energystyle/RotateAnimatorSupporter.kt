@@ -34,25 +34,21 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
 
     @CallSuper
     override fun reloadAnimation() {
-        if (!rotateAnimator.isStarted) {
-            Log.d(TAG, "Initial start of animation, should only be called once")
-            rotateAnimator.start()
-        }
-
+        //TODO: possible performance improvements here?
         if (!FloatRingWindow.visible) {
-            rotateAnimator.pause()
+            rotateAnimator.cancel()
             return
         }
 
         val rotationDuration = when {
-            PowerEventReceiver.isCharging -> Config.chargingRotateDuration
-            Config.autoRotateDisCharging -> Config.defaultRotateDuration
+            PowerEventReceiver.isCharging -> Config.INS.chargingRotateDuration
+            Config.INS.autoRotateDisCharging -> Config.INS.dischargingRotateDuration
             else -> 0L
         }
 
         Log.d(TAG, "Updating rotation duration  ----> dur: $rotationDuration")
         if (rotationDuration == 0L) {
-            rotateAnimator.pause()
+            rotateAnimator.cancel()
             rotateAnimator.setCurrentFraction(0f)
         } else {
             if (rotationDuration != rotateAnimator.duration) {
@@ -60,7 +56,12 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
                 rotateAnimator.setDuration(rotationDuration.toLong())
                     .setCurrentFraction(animatedFraction)
             }
-            rotateAnimator.resume()
+            if (!rotateAnimator.isStarted) {
+                rotateAnimator.start()
+            }
+            if (rotateAnimator.isPaused) {
+                rotateAnimator.resume()
+            }
         }
     }
 
@@ -77,12 +78,12 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
     @CallSuper
     override fun onHide() {
         Log.d(TAG, "onHide  ----> $TAG")
-        rotateAnimator.pause()
+        rotateAnimator.cancel()
     }
 
     @CallSuper
     override fun onRemove() {
         Log.d(TAG, "onRemove  ----> $TAG")
-        rotateAnimator.pause()
+        rotateAnimator.cancel()
     }
 }

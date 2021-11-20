@@ -8,7 +8,8 @@ import android.os.PowerManager
 import android.util.Log
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.floatwindow.FloatRingWindow
-import cn.vove7.energy_ring.util.isOnCharging
+import cn.vove7.energy_ring.util.initialBatteryLevel
+import cn.vove7.energy_ring.util.initialIsCharging
 
 /**
  * # PowerEventReceiver
@@ -33,10 +34,9 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
             addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED)
         }
 
-    var isCharging: Boolean = isOnCharging
+    var isCharging: Boolean = initialIsCharging
+    var batteryLevel: Float = initialBatteryLevel
     val powerSaveMode: Boolean get() = App.powerManager.isPowerSaveMode
-
-    private var lastValue = 0f
 
     override fun onReceive(context: Context?, intent: Intent?) {
         //打开充电自动开启唤醒
@@ -55,8 +55,8 @@ object PowerEventReceiver : EnergyRingBroadcastReceiver() {
                 val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) //电量的刻度
                 val maxLevel = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1) //最大
                 val l = level.toFloat() / maxLevel.toFloat()
-                if (l != lastValue) {
-                    lastValue = l
+                if (l != batteryLevel) {
+                    batteryLevel = l
                     Log.d("Debug :", "onReceive  ----> ACTION_BATTERY_CHANGED $l")
                     FloatRingWindow.update()
                 }

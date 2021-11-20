@@ -37,21 +37,21 @@ class DoubleRingStyle : RotateAnimatorSupporter(), MonitorListener {
     override val displayView: View by lazy {
         LinearLayout(App.INS).apply {
             orientation = LinearLayout.HORIZONTAL
-            addView(ringView1, Config.size, Config.size)
-            addView(spacingView, Config.spacingWidth, 0)
-            addView(ringView2, Config.size, Config.size)
+            addView(ringView1, Config.INS.size, Config.INS.size)
+            addView(spacingView, Config.INS.spacingWidth, 0)
+            addView(ringView2, Config.INS.size, Config.INS.size)
         }
     }
 
     var monitor: DeviceMonitor? = null
 
     private fun buildSecondaryFeature() {
-        if (Config.secondaryRingFeature == 0 && monitor is MemoryMonitor) {
+        if (Config.INS.secondaryRingFeature == 0 && monitor is MemoryMonitor) {
             return
         }
         monitor?.onStop()
 
-        monitor = (when (Config.secondaryRingFeature) {
+        monitor = (when (Config.INS.secondaryRingFeature) {
             0 -> MemoryMonitor(this)
             else -> {
                 MemoryMonitor(this)
@@ -64,8 +64,8 @@ class DoubleRingStyle : RotateAnimatorSupporter(), MonitorListener {
     var lastMonitorValue: Float = 0f
 
     override fun onProgress(ps: Float) {
-        (if (Config.doubleRingChargingIndex == 0) ringView2 else ringView1).apply {
-            Log.d(TAG, "update monitor p ----> ${1 - Config.doubleRingChargingIndex} $ps")
+        (if (Config.INS.doubleRingChargingIndex == 0) ringView2 else ringView1).apply {
+            Log.d(TAG, "update monitor p ----> ${1 - Config.INS.doubleRingChargingIndex} $ps")
             this.progress = ps
             lastMonitorValue = ps
             mainColor = getColorByRange(this.progress)
@@ -82,29 +82,29 @@ class DoubleRingStyle : RotateAnimatorSupporter(), MonitorListener {
     override fun update(progress: Float?) {
         arrayOf(ringView1, ringView2).forEachIndexed { index, it ->
             it.apply {
-                strokeWidthF = Config.strokeWidthF
-                if (index == Config.doubleRingChargingIndex) {
+                strokeWidthF = Config.INS.strokeWidth
+                if (index == Config.INS.doubleRingChargingIndex) {
                     if (progress != null) {
                         this.progress = progress
                     }
                 } else {
                     this.progress = lastMonitorValue
                 }
-                if (Config.colorMode == 2) {
-                    doughnutColors = Config.colorsDischarging
+                if (Config.INS.colorMode == 2) {
+                    doughnutColors = Config.INS.colorsDischarging
                 } else {
                     mainColor = getColorByRange(this.progress)
                 }
-                bgColor = Config.ringBgColor
-                reSize(Config.size)
+                bgColor = Config.INS.bgColor
+                reSize(Config.INS.size)
                 requestLayout()
             }
         }
         buildSecondaryFeature()
 
         spacingView.layoutParams = spacingView.layoutParams?.also {
-            it.width = Config.spacingWidth
-        } ?: (LinearLayout.LayoutParams(Config.spacingWidth, 0))
+            it.width = Config.INS.spacingWidth
+        } ?: (LinearLayout.LayoutParams(Config.INS.spacingWidth, 0))
     }
 
     override fun onAnimatorUpdate(rotateValue: Float) {

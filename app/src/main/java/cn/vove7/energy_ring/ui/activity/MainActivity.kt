@@ -1,10 +1,10 @@
 package cn.vove7.energy_ring.ui.activity
 
+import android.annotation.SuppressLint
 import android.content.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.MenuItem
 import android.view.View
 import android.widget.ActionMenuView
@@ -18,8 +18,6 @@ import cn.vove7.energy_ring.service.AccService
 import cn.vove7.energy_ring.ui.adapter.StylePagerAdapter
 import cn.vove7.energy_ring.util.*
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.input.input
@@ -29,7 +27,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlin.math.ceil
 
 class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
 
@@ -48,16 +45,13 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         import_view.setOnClickListener(::importFromClip)
         initRadioStylesView()
 
-        styleButtons[Config.energyType.ordinal].callOnClick()
+        styleButtons[Config.INS.energyType.ordinal].callOnClick()
 
         menuInflater.inflate(R.menu.main, menu_view.menu)
         menu_view.setOnMenuItemClickListener(this)
         menu_view.overflowIcon = getDrawable(R.drawable.ic_settings)
-        menu_view.menu.findItem(R.id.rotate_auto_hide).isChecked = Config.autoHideRotate
-        menu_view.menu.findItem(R.id.screen_off_auto_hide).isChecked = Config.screenOffHide
-        menu_view.menu.findItem(R.id.auto_hide_in_power_save_mode).isChecked = Config.powerSaveHide
 
-        refreshMenu()
+        refreshData()
 
         if (!AccService.enabled) {
             openAccessibilityPermission()
@@ -78,8 +72,8 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         val i = styleButtons.indexOf(v)
         styleButtons.forEach { it.isSelected = (it == v) }
         val newStyle = ShapeType.values()[i]
-        if (Config.energyType != newStyle) {
-            Config.energyType = newStyle
+        if (Config.INS.energyType != newStyle) {
+            Config.INS.energyType = newStyle
             FloatRingWindow.update(layoutChange = true)
         }
         style_view_pager.currentItem = i
@@ -92,77 +86,41 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
             R.id.menu_color_mode -> { pickColorMode(); return true }
             R.id.menu_model_preset -> { pickPreSet(); return true }
             R.id.menu_force_refresh -> null //do nothing, FloatRingWindow will be refreshed
-            R.id.rotate_auto_hide -> {
-                Config.autoHideRotate = !Config.autoHideRotate
-                item.isChecked = Config.autoHideRotate
+            R.id.show_rotated -> {
+                Config.INS.showRotated = !Config.INS.showRotated
+                item.isChecked = Config.INS.showRotated
             }
-            R.id.auto_hide_in_power_save_mode -> {
-                Config.powerSaveHide = !Config.powerSaveHide
-                item.isChecked = Config.powerSaveHide
+            R.id.show_battery_saver -> {
+                Config.INS.showBatterySaver = !Config.INS.showBatterySaver
+                item.isChecked = Config.INS.showBatterySaver
             }
-            R.id.screen_off_auto_hide -> {
-                Config.screenOffHide = !Config.screenOffHide
-                item.isChecked = Config.screenOffHide
+            R.id.show_screen_off -> {
+                Config.INS.showScreenOff = !Config.INS.showScreenOff
+                item.isChecked = Config.INS.showScreenOff
             }
         }
+        refreshData()
         FloatRingWindow.update(layoutChange = true)
         return true
     }
 
     private fun pickColorMode() {
-        if (Config.energyType == ShapeType.PILL) {
+        if (Config.INS.energyType == ShapeType.PILL) {
             Toast.makeText(this, R.string.not_support_current_mode, Toast.LENGTH_SHORT).show()
             return
         }
         MaterialDialog(this).show {
             title(R.string.color_mode)
             listItems(R.array.modes_of_color) { _, i, _ ->
-                Config.colorMode = i
-                refreshMenu()
+                Config.INS.colorMode = i
+                refreshData()
                 FloatRingWindow.update(layoutChange = true)
             }
         }
     }
 
-    private fun refreshMenu() {
-        menu_view.menu.findItem(R.id.menu_color_mode).title = getString(R.string.color_mode) + ": " +
-                resources.getStringArray(R.array.modes_of_color)[Config.colorMode]
-    }
-
-    private var firstIn = true
-    override fun onResume() {
-        super.onResume()
-        if (!firstIn && Config.tipOfRecent) {
-            MaterialDialog(this).show {
-                title(R.string.how_to_hide_in_recent)
-                message(R.string.help_to_hide_in_recent)
-                cancelable(false)
-                cancelOnTouchOutside(false)
-                noAutoDismiss()
-                positiveButton(text = "10s")
-                getActionButton(WhichButton.POSITIVE).isEnabled = false
-                object : CountDownTimer(1000, 100) {
-                    override fun onFinish() {
-                        getActionButton(WhichButton.POSITIVE).isEnabled = true
-                        positiveButton(R.string.i_know) {
-                            dismiss()
-                            Config.tipOfRecent = false
-                            showAbout()
-                        }
-                    }
-
-                    override fun onTick(millis: Long) {
-                        positiveButton(text = "${ceil(millis / 1000.0).toInt()}s")
-                    }
-                }.start()
-            }
-        }
-        firstIn = false
-    }
-
     private fun outConfig(view: View) {
-        val info = ConfigInfo.fromConfig(Build.MODEL)
-        val msg = GsonBuilder().setPrettyPrinting().create().toJson(info)
+        val msg = Config.jsonSerialize(Config.INS)
         MaterialDialog(this).show {
             title(R.string.config_data)
             message(text = "$msg\n" + getString(R.string.welcome_to_share_on_comment_area))
@@ -171,17 +129,17 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
                 cm.setPrimaryClip(ClipData.newPlainText("EnergyRing", msg))
             }
             negativeButton(R.string.save_current_config) {
-                saveConfig(info)
+                saveConfig(Config.INS)
             }
         }
     }
 
-    private fun saveConfig(info: ConfigInfo, name: CharSequence? = null) {
+    private fun saveConfig(config: Config, name: CharSequence = Build.MODEL) {
         MaterialDialog(this@MainActivity).show {
             title(R.string.config_title)
             input(waitForPositiveButton = true, prefill = name) { _, s ->
-                info.name = s.toString()
-                info.save()
+                config.buildModel = s.toString()
+                ApplicationState.saveConfig(config)
             }
             positiveButton()
             negativeButton()
@@ -195,22 +153,22 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
     private fun pickPreSet() {
         MaterialDialog(this).show {
             val allDs = Config.presetDevices.toMutableList().also {
-                it.addAll(Config.localConfig)
+                it.addAll(ApplicationState.savedConfigs)
             }
             title(R.string.model_preset)
             message(R.string.hint_preset_share)
-            var ds = allDs.filter { it.model == Build.MODEL }
+            var ds = allDs.filter { it.buildModel == Build.MODEL }
             if (ds.isEmpty()) {
                 ds = allDs
             }
-            listItems(items = ds.map { it.name }, waitForPositiveButton = false) { _, i, _ ->
+            listItems(items = ds.map { it.buildModel }, waitForPositiveButton = false) { _, i, _ ->
                 dismiss()
                 applyConfig(ds[i])
             }
             checkBoxPrompt(R.string.display_only_this_model, isCheckedDefault = ds.size != allDs.size) { c ->
-                val dss = if (c) allDs.filter { it.model.equals(Build.MODEL, ignoreCase = true) }
+                val dss = if (c) allDs.filter { it.buildModel.equals(Build.MODEL, ignoreCase = true) }
                 else allDs
-                listItems(items = dss.map { it.name }, waitForPositiveButton = false) { _, i, _ ->
+                listItems(items = dss.map { it.buildModel }, waitForPositiveButton = false) { _, i, _ ->
                     applyConfig(dss[i])
                 }
             }
@@ -222,27 +180,31 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
     private fun editLocalConfig() {
         MaterialDialog(this).show {
             title(R.string.edit_local_config)
-            listItemsMultiChoice(items = Config.localConfig.map { it.name }, waitForPositiveButton = true) { _, indices, _ ->
-                val cs = Config.localConfig
-                val list = cs.toMutableList()
-                list.removeAll(indices.map { cs[it] })
-                Config.localConfig = list.toTypedArray()
+            listItemsMultiChoice(items = ApplicationState.savedConfigs.map { it.buildModel }, waitForPositiveButton = true) { _, indices, _ ->
+                val savedConfigs = ApplicationState.savedConfigs.toMutableList()
+                savedConfigs.removeAll(indices.map { savedConfigs[it] })
+                ApplicationState.savedConfigs = savedConfigs.toTypedArray()
             }
             positiveButton(R.string.delete_selected)
             negativeButton()
         }
     }
 
-    private fun applyConfig(info: ConfigInfo) {
-        info.applyConfig()
-        Config.energyType = info.energyType ?: ShapeType.RING
+    private fun applyConfig(config: Config) {
+        ApplicationState.applyConfig(config)
         FloatRingWindow.update(layoutChange = true)
         refreshData()
     }
 
     private fun refreshData() {
+        menu_view.menu.findItem(R.id.menu_color_mode).title = getString(R.string.color_mode) + ": " +
+                resources.getStringArray(R.array.modes_of_color)[Config.INS.colorMode]
+        menu_view.menu.findItem(R.id.show_rotated).isChecked = Config.INS.showRotated
+        menu_view.menu.findItem(R.id.show_screen_off).isChecked = Config.INS.showScreenOff
+        menu_view.menu.findItem(R.id.show_battery_saver).isChecked = Config.INS.showBatterySaver
         pageAdapter.getItem(style_view_pager.currentItem).onResume()
-        styleButtons[Config.energyType.ordinal].callOnClick()
+        styleButtons[Config.INS.energyType.ordinal].callOnClick()
+        ApplicationState.persistState()
     }
 
     private fun importFromClip(view: View) {
@@ -267,11 +229,11 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
 
     private fun importConfig(content: String, save: Boolean) {
         kotlin.runCatching {
-            Gson().fromJson(content, ConfigInfo::class.java)
+            Config.jsonDeserialize(content)
         }.onSuccess {
             applyConfig(it)
             if (save) {
-                saveConfig(it, it.name)
+                saveConfig(it)
             }
         }.onFailure {
             if (it is JsonSyntaxException) {
@@ -357,10 +319,5 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
                 setImageResource(R.drawable.qr_wx)
             })
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Config.devicesWeakLazy.clearWeakValue()
     }
 }

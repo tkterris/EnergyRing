@@ -37,16 +37,16 @@ class PillStyle : RotateAnimatorSupporter() {
 
     override fun update(progress: Float?) {
         (displayView as PillView).apply {
-            strokeWidthF = Config.strokeWidthF
+            strokeWidthF = Config.INS.strokeWidth
 
             progress?.also {
                 this.progress = it
             }
             mainColor = getColorByRange(this.progress)
-            bgColor = Config.ringBgColor
+            bgColor = Config.INS.bgColor
 
-            val h = Config.size
-            val w = Config.spacingWidth + h
+            val h = Config.INS.size
+            val w = Config.INS.spacingWidth + h
             layoutParams = layoutParams?.also {
                 if (it.width != w || it.height != h) {
                     Log.d(TAG, "update  ----> ${w to h}")

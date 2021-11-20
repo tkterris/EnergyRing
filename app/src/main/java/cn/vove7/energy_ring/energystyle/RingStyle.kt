@@ -18,7 +18,7 @@ class RingStyle : EnergyStyle, RotateAnimatorSupporter() {
 
     private val ringViewDelegate = weakLazy {
         RingView(App.INS).apply {
-            layoutParams = FrameLayout.LayoutParams(Config.size, Config.size)
+            layoutParams = FrameLayout.LayoutParams(Config.INS.size, Config.INS.size)
         }
     }
 
@@ -36,17 +36,17 @@ class RingStyle : EnergyStyle, RotateAnimatorSupporter() {
 
     override fun update(progress: Float?) {
         (displayView as RingView).apply {
-            strokeWidthF = Config.strokeWidthF
+            strokeWidthF = Config.INS.strokeWidth
             if (progress != null) {
                 this.progress = progress
             }
-            if (Config.colorMode == 2) {
-                doughnutColors = Config.colorsDischarging
+            if (Config.INS.colorMode == 2) {
+                doughnutColors = Config.INS.colorsDischarging
             } else {
                 mainColor = getColorByRange(this.progress)
             }
-            bgColor = Config.ringBgColor
-            reSize(Config.size)
+            bgColor = Config.INS.bgColor
+            reSize(Config.INS.size)
             requestLayout()
         }
     }

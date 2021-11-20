@@ -81,7 +81,7 @@ class RingView @JvmOverloads constructor(
         //圆环
         paint.strokeWidth = strokeWidth
         paint.style = Paint.Style.STROKE
-        if (Config.colorMode == 2) {
+        if (Config.INS.colorMode == 2) {
             paint.shader = shader
         } else {
             paint.color = mainColor
