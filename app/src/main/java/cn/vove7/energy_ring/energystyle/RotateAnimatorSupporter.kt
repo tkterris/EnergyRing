@@ -44,22 +44,26 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
 
         if (rotationSpeed == 0) {
             Log.d(TAG, "Stopping animation, setting repeatCount to zero")
-            rotateAnimator.repeatCount = 0
+            setAnimationParameters(SECOND_IN_MILLIS, 0)
         } else {
             val rotationDuration = SECOND_IN_MILLIS * DEGREES / rotationSpeed
             Log.d(TAG, "Updating rotation duration  ----> duration: $rotationDuration")
-            if (rotationDuration != rotateAnimator.duration) {
-                val animatedFraction = rotateAnimator.animatedFraction
-                rotateAnimator.setDuration(rotationDuration).setCurrentFraction(animatedFraction)
-            }
-            rotateAnimator.repeatCount = ValueAnimator.INFINITE
-            if (!rotateAnimator.isStarted) {
-                rotateAnimator.start()
-            }
-            if (rotateAnimator.isPaused) {
-                rotateAnimator.resume()
-            }
+            setAnimationParameters(rotationDuration, ValueAnimator.INFINITE)
         }
+        if (!rotateAnimator.isStarted) {
+            rotateAnimator.start()
+        }
+        if (rotateAnimator.isPaused) {
+            rotateAnimator.resume()
+        }
+    }
+
+    private fun setAnimationParameters(rotationDuration: Long, repeatCount: Int) {
+        if (rotationDuration != rotateAnimator.duration) {
+            val animatedFraction = rotateAnimator.animatedFraction
+            rotateAnimator.setDuration(rotationDuration).setCurrentFraction(animatedFraction)
+        }
+        rotateAnimator.repeatCount = repeatCount
     }
 
     @CallSuper
