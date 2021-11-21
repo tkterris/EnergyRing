@@ -42,10 +42,7 @@ class AccService : AccessibilityService() {
         RotationListener.start()
         FloatRingWindow.start()
         HideBatteryReceiver.start()
-        //TODO: fix issue with service startup that requires this workaround
-        Handler().postDelayed({
-            ApplicationState.applyConfig()
-        }, 5000)
+        ApplicationState.applyConfig()
 
         super.onServiceConnected()
     }
