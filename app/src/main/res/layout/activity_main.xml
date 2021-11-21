@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@color/app_background"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <FrameLayout
@@ -14,10 +14,10 @@
         <ActionMenuView
             android:id="@+id/menu_view"
             android:layout_width="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top" />
+            android:layout_gravity="end|top"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,49 +25,50 @@
             android:gravity="center"
             android:orientation="vertical"
             android:paddingTop="5dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingTop="5dp">
 
-            <ImageView
-                android:id="@+id/button_style_ring"
-                android:layout_width="50dp"
-                android:layout_height="34dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/bg_style_button"
-                android:contentDescription="@string/type_ring"
-                android:padding="5dp"
-                android:src="@drawable/ic_type_ring"
-                app:tint="@color/tint_style_button" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingTop="5dp">
 
-            <ImageView
-                android:id="@+id/button_style_double_ring"
-                android:layout_width="50dp"
-                android:layout_height="34dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/bg_style_button"
-                android:contentDescription="@string/type_double_ring"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:src="@drawable/ic_type_double_ring"
-                app:tint="@color/tint_style_button" />
+                <ImageView
+                    android:id="@+id/button_style_ring"
+                    android:layout_width="50dp"
+                    android:layout_height="34dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/bg_style_button"
+                    android:contentDescription="@string/type_ring"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_type_ring"
+                    app:tint="@color/tint_style_button" />
 
-            <ImageView
-                android:id="@+id/button_style_pill"
-                android:layout_width="50dp"
-                android:layout_height="34dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/bg_style_button"
-                android:contentDescription="@string/type_pill"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:src="@drawable/ic_type_pill"
-                app:tint="@color/tint_style_button" />
+                <ImageView
+                    android:id="@+id/button_style_double_ring"
+                    android:layout_width="50dp"
+                    android:layout_height="34dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/bg_style_button"
+                    android:contentDescription="@string/type_double_ring"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:src="@drawable/ic_type_double_ring"
+                    app:tint="@color/tint_style_button" />
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/button_style_pill"
+                    android:layout_width="50dp"
+                    android:layout_height="34dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/bg_style_button"
+                    android:contentDescription="@string/type_pill"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:src="@drawable/ic_type_pill"
+                    app:tint="@color/tint_style_button" />
+
+            </LinearLayout>
 
             <Switch
                 android:id="@+id/enable_service"
@@ -75,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text="@string/enable_service"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
         </LinearLayout>
     </FrameLayout>
 
