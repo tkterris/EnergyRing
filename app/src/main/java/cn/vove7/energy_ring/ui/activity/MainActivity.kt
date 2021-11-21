@@ -1,5 +1,6 @@
 package cn.vove7.energy_ring.ui.activity
 
+import android.app.Activity
 import android.content.*
 import android.net.Uri
 import android.os.Build
@@ -26,6 +27,11 @@ import com.afollestad.materialdialogs.list.listItems
 import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.google.gson.JsonSyntaxException
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.*
+import java.net.URI
+
+const val CONFIG_JSON_CREATE = 1
+const val CONFIG_JSON_LOAD = 2
 
 class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
 
@@ -40,9 +46,8 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
 
         style_view_pager.adapter = pageAdapter
 
-        //TODO: add listener to persist to file
-        //view_info_view.setOnClickListener(::outConfig)
-        import_view.setOnClickListener(::importFromClip)
+        export_view.setOnClickListener(::storeToFile)
+        import_view.setOnClickListener(::loadFromFile)
         initRadioStylesView()
 
         styleButtons[Config.INS.device.energyType.ordinal].callOnClick()
@@ -168,39 +173,48 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         styleButtons[Config.INS.device.energyType.ordinal].callOnClick()
     }
 
-    private fun importFromClip(view: View) {
-        //TODO: load from file instead of clipboard
-        val content = getSystemService(ClipboardManager::class.java)!!.primaryClip?.let {
-            it.getItemAt(it.itemCount - 1).text
+    private fun storeToFile(view: View) {
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/json"
+            putExtra(Intent.EXTRA_TITLE, "energy_ring_config.json")
         }
-        if (content == null) {
-            Toast.makeText(this, R.string.empty_in_clipboard, Toast.LENGTH_SHORT).show()
-            return
-        }
-        MaterialDialog(this).show {
-            title(R.string.clipboard_content)
-            message(text = content)
-            positiveButton(R.string.text_import) {
-                importConfig(content.toString(), false)
-            }
-            negativeButton(R.string.config_import_and_save) {
-                importConfig(content.toString(), true)
-            }
-        }
+        startActivityForResult(intent, CONFIG_JSON_CREATE)
     }
 
-    private fun importConfig(content: String, save: Boolean) {
-        kotlin.runCatching {
-            Config.jsonDeserialize(content)
-        }.onSuccess {
-            applyConfigAndRefreshMenu(it)
-        }.onFailure {
-            if (it is JsonSyntaxException) {
-                App.toast(R.string.import_config_hint, Toast.LENGTH_LONG)
-            } else {
-                App.toast(it.message ?: getString(R.string.import_failed))
-            }
+    private fun loadFromFile(view: View) {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/json"
         }
+        startActivityForResult(intent, CONFIG_JSON_LOAD)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            resultData?.data?.also { uri ->
+                when (requestCode) {
+                    CONFIG_JSON_CREATE -> {
+                        val writer = contentResolver.openOutputStream(uri)!!.bufferedWriter()
+                        writer.write(Config.INS.jsonSerialize())
+                        writer.close()
+                    }
+                    CONFIG_JSON_LOAD -> {
+                        val reader = contentResolver.openInputStream(uri)!!.bufferedReader()
+                        val configString = reader.lines().toArray().joinToString(separator = "\n", limit = 500)
+                        reader.close()
+                        try {
+                            applyConfigAndRefreshMenu(Config.jsonDeserialize(configString))
+                        } catch (e : Exception) {
+                            Toast.makeText(this@MainActivity, R.string.parse_json_fail, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        } else {
+            Toast.makeText(this@MainActivity, R.string.file_selection_fail, Toast.LENGTH_SHORT).show()
+        }
+        super.onActivityResult(requestCode, resultCode, resultData)
     }
 
     private fun showAbout() {

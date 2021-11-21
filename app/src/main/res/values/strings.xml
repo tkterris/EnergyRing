@@ -12,8 +12,8 @@
     <string name="position_of_horizontal">Horizontal position</string>
     <string name="model_preset">Preset model</string>
     <string name="copy">Copy</string>
-    <string name="import_from_clipboard">Import from \nclipboard</string>
-    <string name="view_config">View \n(save)</string>
+    <string name="import_config">Import\nconfiguration</string>
+    <string name="export_config">Export\nconfiguration</string>
     <string name="text_import">Import</string>
     <string name="clipboard_content">Shear board content</string>
     <string name="empty_in_clipboard">Clipboard is empty.</string>
@@ -78,8 +78,8 @@
     <string name="about_msg">EnergyRing \n- Auto hide on fullscreen  (with the status bar) \n- Auto hide on horizontal-screen  \n- Charging animation \n- Screen-off notification reminder \n- not affected by resolution (2k / 1080p) \nIt will appear "freezing" at some times. Changing the attribute ring will not change. You can force refresh or switch shapes in the menu. \n[this app is free of charge]</string>
     <string name="pick_color">Pick color</string>
     <string name="enable_service">Enable Service</string>
-    <string name="import_failed">Import failed</string>
-    <string name="import_config_hint">Format error, please keep only the contents in {…}</string>
+    <string name="file_selection_fail">File request failed</string>
+    <string name="parse_json_fail">Failed to parse JSON</string>
     <string name="screenoff_reminder_hint">Screen-off Reminder\n It\'s need to notification permission. When the breathing light flashes, double-click to light up the screen. \n When you double-click the bright screen, the face unlock may not work.</string>
 
     <string-array name="way_of_support">

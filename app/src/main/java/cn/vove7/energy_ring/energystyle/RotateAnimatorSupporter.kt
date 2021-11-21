@@ -1,7 +1,6 @@
 package cn.vove7.energy_ring.energystyle
 
 import android.animation.ValueAnimator
-import android.text.format.DateUtils
 import android.util.Log
 import android.view.animation.LinearInterpolator
 import androidx.annotation.CallSuper
@@ -14,10 +13,12 @@ import cn.vove7.energy_ring.util.state.Config
  * @author Vove
  * 2020/5/12
  */
+const val DEGREES = 360L
+const val SECOND_IN_MILLIS = 1000L
+
 abstract class RotateAnimatorSupporter : EnergyStyle {
 
     val TAG : String = this::class.java.simpleName
-    val DEGREES = 360L
 
     companion object {
     }
@@ -45,8 +46,7 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
             Log.d(TAG, "Stopping animation, setting repeatCount to zero")
             rotateAnimator.repeatCount = 0
         } else {
-            val rotationDuration
-                = DateUtils.SECOND_IN_MILLIS * DEGREES / rotationSpeed
+            val rotationDuration = SECOND_IN_MILLIS * DEGREES / rotationSpeed
             Log.d(TAG, "Updating rotation duration  ----> duration: $rotationDuration")
             if (rotationDuration != rotateAnimator.duration) {
                 val animatedFraction = rotateAnimator.animatedFraction
