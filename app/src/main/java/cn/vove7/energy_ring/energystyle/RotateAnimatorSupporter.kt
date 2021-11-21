@@ -18,7 +18,6 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
 
     val TAG : String = this::class.java.simpleName
     val DEGREES = 360L
-    val ROTATE_SPEED_SCALE = 1L
 
     companion object {
     }
@@ -42,17 +41,18 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
 
         val rotationSpeed = Config.INS.rotationSpeed
 
-        Log.d(TAG, "Updating rotation speed  ----> speed: $rotationSpeed")
         if (rotationSpeed == 0) {
-            rotateAnimator.cancel()
-            rotateAnimator.setCurrentFraction(0f)
+            Log.d(TAG, "Stopping animation, setting repeatCount to zero")
+            rotateAnimator.repeatCount = 0
         } else {
             val rotationDuration
-                = DateUtils.SECOND_IN_MILLIS * DEGREES / (rotationSpeed * ROTATE_SPEED_SCALE)
+                = DateUtils.SECOND_IN_MILLIS * DEGREES / rotationSpeed
+            Log.d(TAG, "Updating rotation duration  ----> duration: $rotationDuration")
             if (rotationDuration != rotateAnimator.duration) {
                 val animatedFraction = rotateAnimator.animatedFraction
                 rotateAnimator.setDuration(rotationDuration).setCurrentFraction(animatedFraction)
             }
+            rotateAnimator.repeatCount = ValueAnimator.INFINITE
             if (!rotateAnimator.isStarted) {
                 rotateAnimator.start()
             }
