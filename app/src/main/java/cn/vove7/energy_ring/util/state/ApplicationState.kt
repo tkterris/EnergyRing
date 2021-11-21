@@ -2,6 +2,7 @@ package cn.vove7.energy_ring.util.state
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.listener.BroadcastActions
 import cn.vove7.energy_ring.util.sendEnergyBroadcast
@@ -22,8 +23,7 @@ object ApplicationState {
         //TODO: swap lines once UI toggle is set up
         enabled = sharedPreferences.getBoolean("enabled", true)
         //enabled = sharedPreferences.getBoolean("enabled", false) && AccService.enabled
-        //TODO: if null, use preset if one matches
-        activeConfig = Config.jsonDeserialize(sharedPreferences.getString("activeConfig", "{}")!!)
+        activeConfig = Config.jsonDeserialize(sharedPreferences.getString("activeConfig", getDefaultConfigSerialized())!!)
     }
 
     private fun persistState() {
@@ -42,5 +42,11 @@ object ApplicationState {
 
     private fun sharedPreferences() : SharedPreferences {
         return App.INS.getSharedPreferences(App.INS.packageName, Context.MODE_PRIVATE)
+    }
+
+    private fun getDefaultConfigSerialized() : String {
+        val defaultConfig = Config()
+        defaultConfig.device = DevicePresets.defaults.firstOrNull { it.buildModel == Build.MODEL } ?: defaultConfig.device
+        return defaultConfig.jsonSerialize()
     }
 }
