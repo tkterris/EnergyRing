@@ -37,7 +37,7 @@ class PillStyle : RotateAnimatorSupporter() {
 
     override fun update(progress: Float?) {
         (displayView as PillView).apply {
-            strokeWidthF = Config.INS.strokeWidth
+            strokeWidthF = Config.INS.device.strokeWidth
 
             progress?.also {
                 this.progress = it

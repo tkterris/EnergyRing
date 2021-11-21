@@ -34,7 +34,7 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
         buildEnergyStyle()
     }
 
-    private fun buildEnergyStyle(): EnergyStyle = when (Config.INS.energyType) {
+    private fun buildEnergyStyle(): EnergyStyle = when (Config.INS.device.energyType) {
         ShapeType.RING -> RingStyle()
         ShapeType.DOUBLE_RING -> DoubleRingStyle()
         ShapeType.PILL -> PillStyle()

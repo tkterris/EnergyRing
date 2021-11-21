@@ -36,7 +36,7 @@ class RingStyle : EnergyStyle, RotateAnimatorSupporter() {
 
     override fun update(progress: Float?) {
         (displayView as RingView).apply {
-            strokeWidthF = Config.INS.strokeWidth
+            strokeWidthF = Config.INS.device.strokeWidth
             if (progress != null) {
                 this.progress = progress
             }

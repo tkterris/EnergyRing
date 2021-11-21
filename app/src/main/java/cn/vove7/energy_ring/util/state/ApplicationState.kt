@@ -14,7 +14,6 @@ import cn.vove7.energy_ring.util.sendEnergyBroadcast
  */
 object ApplicationState {
     var activeConfig: Config
-    var savedConfigs: Array<Config>
     //TODO: UI toggle for this
     var enabled: Boolean = true
 
@@ -23,23 +22,16 @@ object ApplicationState {
         //TODO: swap lines once UI toggle is set up
         enabled = sharedPreferences.getBoolean("enabled", true)
         //enabled = sharedPreferences.getBoolean("enabled", false) && AccService.enabled
+        //TODO: if null, use preset if one matches
         activeConfig = Config.jsonDeserialize(sharedPreferences.getString("activeConfig", "{}")!!)
-        savedConfigs = sharedPreferences.getStringSet("savedConfigs", emptySet())!!.map {
-            Config.jsonDeserialize(it)
-        }.toTypedArray()
     }
 
     private fun persistState() {
         with(sharedPreferences().edit()) {
             this.putBoolean("enabled", enabled)
             this.putString("activeConfig", activeConfig.jsonSerialize())
-            this.putStringSet("savedConfigs", savedConfigs.map { it.jsonSerialize() }.toSet())
             apply()
         }
-    }
-
-    fun addSavedConfig(config: Config) {
-        savedConfigs = savedConfigs.toMutableList().apply { add(config) }.toTypedArray()
     }
 
     fun applyConfig(newConfig : Config = Config.INS) {

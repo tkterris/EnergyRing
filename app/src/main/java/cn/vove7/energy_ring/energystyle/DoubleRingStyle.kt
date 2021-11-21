@@ -82,7 +82,7 @@ class DoubleRingStyle : RotateAnimatorSupporter(), MonitorListener {
     override fun update(progress: Float?) {
         arrayOf(ringView1, ringView2).forEachIndexed { index, it ->
             it.apply {
-                strokeWidthF = Config.INS.strokeWidth
+                strokeWidthF = Config.INS.device.strokeWidth
                 if (index == Config.INS.doubleRingChargingIndex) {
                     if (progress != null) {
                         this.progress = progress

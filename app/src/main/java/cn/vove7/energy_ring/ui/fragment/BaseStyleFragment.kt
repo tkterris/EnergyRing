@@ -47,16 +47,16 @@ abstract class BaseStyleFragment : Fragment() {
         bg_color_view?.setTextColor(Config.INS.bgColor.antiColor)
         color_list?.adapter?.notifyDataSetChanged()
         color_list_charging?.adapter?.notifyDataSetChanged()
-        strokeWidth_seek_bar?.progress = Config.INS.strokeWidth.toInt()
+        strokeWidth_seek_bar?.progress = Config.INS.device.strokeWidth.toInt()
 
-        posx_seek_bar?.progress = Config.INS.posXf
-        posy_seek_bar?.progress = Config.INS.posYf
+        posx_seek_bar?.progress = Config.INS.device.posXf
+        posy_seek_bar?.progress = Config.INS.device.posYf
         size_seek_bar?.progress = Config.INS.size
 
         charging_rotateDuration_seek_bar?.progress = Config.INS.chargingRotateSpeed
         discharging_rotateDuration_seek_bar?.progress = Config.INS.dischargingRotateSpeed
 
-        spacing_seek_bar?.progress = Config.INS.spacingWidthF
+        spacing_seek_bar?.progress = Config.INS.device.spacingWidthF
     }
 
     @CallSuper
@@ -81,7 +81,7 @@ abstract class BaseStyleFragment : Fragment() {
         }
         strokeWidth_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
-            Config.INS.strokeWidth = progress.toFloat()
+            Config.INS.device.strokeWidth = progress.toFloat()
             ApplicationState.applyConfig()
         }
         strokeWidth_seek_bar?.onStart {
@@ -89,12 +89,12 @@ abstract class BaseStyleFragment : Fragment() {
         }
         posx_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
-            Config.INS.posXf = progress
+            Config.INS.device.posXf = progress
             ApplicationState.applyConfig()
         }
         posy_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
-            Config.INS.posYf = progress
+            Config.INS.device.posYf = progress
             ApplicationState.applyConfig()
         }
         size_seek_bar?.onStart {
@@ -110,7 +110,7 @@ abstract class BaseStyleFragment : Fragment() {
         }
         spacing_seek_bar?.onChange { progress, user ->
             if (!user) return@onChange
-            Config.INS.spacingWidthF = progress
+            Config.INS.device.spacingWidthF = progress
             ApplicationState.applyConfig()
         }
     } ?: Unit

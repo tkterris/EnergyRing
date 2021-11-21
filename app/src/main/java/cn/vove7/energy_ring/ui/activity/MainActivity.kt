@@ -17,6 +17,7 @@ import cn.vove7.energy_ring.ui.adapter.StylePagerAdapter
 import cn.vove7.energy_ring.util.*
 import cn.vove7.energy_ring.util.state.ApplicationState
 import cn.vove7.energy_ring.util.state.Config
+import cn.vove7.energy_ring.util.state.DevicePresets
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.customview.customView
@@ -39,11 +40,12 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
 
         style_view_pager.adapter = pageAdapter
 
-        view_info_view.setOnClickListener(::outConfig)
+        //TODO: add listener to persist to file
+        //view_info_view.setOnClickListener(::outConfig)
         import_view.setOnClickListener(::importFromClip)
         initRadioStylesView()
 
-        styleButtons[Config.INS.energyType.ordinal].callOnClick()
+        styleButtons[Config.INS.device.energyType.ordinal].callOnClick()
 
         menuInflater.inflate(R.menu.main, menu_view.menu)
         menu_view.setOnMenuItemClickListener(this)
@@ -70,8 +72,8 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         val i = styleButtons.indexOf(v)
         styleButtons.forEach { it.isSelected = (it == v) }
         val newStyle = ShapeType.values()[i]
-        if (Config.INS.energyType != newStyle) {
-            Config.INS.energyType = newStyle
+        if (Config.INS.device.energyType != newStyle) {
+            Config.INS.device.energyType = newStyle
             ApplicationState.applyConfig()
         }
         style_view_pager.currentItem = i
@@ -106,7 +108,7 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
     }
 
     private fun pickColorMode() {
-        if (Config.INS.energyType == ShapeType.PILL) {
+        if (Config.INS.device.energyType == ShapeType.PILL) {
             Toast.makeText(this, R.string.not_support_current_mode, Toast.LENGTH_SHORT).show()
             return
         }
@@ -119,42 +121,13 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         }
     }
 
-    private fun outConfig(view: View) {
-        val msg = Config.INS.jsonSerialize()
-        MaterialDialog(this).show {
-            title(R.string.config_data)
-            message(text = "$msg\n" + getString(R.string.welcome_to_share_on_comment_area))
-            positiveButton(R.string.copy) {
-                val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                cm.setPrimaryClip(ClipData.newPlainText("EnergyRing", msg))
-            }
-            negativeButton(R.string.save_current_config) {
-                saveConfig(Config.INS)
-            }
-        }
-    }
-
-    private fun saveConfig(config: Config, name: CharSequence = Build.MODEL) {
-        MaterialDialog(this@MainActivity).show {
-            title(R.string.config_title)
-            input(waitForPositiveButton = true, prefill = name) { _, s ->
-                config.buildModel = s.toString()
-                ApplicationState.addSavedConfig(config)
-            }
-            positiveButton()
-            negativeButton()
-        }
-    }
-
     override fun onBackPressed() {
         finishAndRemoveTask()
     }
 
     private fun pickPreSet() {
         MaterialDialog(this).show {
-            val allDs = Config.presetDevices.toMutableList().also {
-                it.addAll(ApplicationState.savedConfigs)
-            }
+            val allDs = DevicePresets.defaults.toMutableList()
             title(R.string.model_preset)
             message(R.string.hint_preset_share)
             var ds = allDs.filter { it.buildModel == Build.MODEL }
@@ -163,34 +136,23 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
             }
             listItems(items = ds.map { it.buildModel }, waitForPositiveButton = false) { _, i, _ ->
                 dismiss()
-                applyConfigAndRefreshMenu(ds[i])
+                applyConfigAndRefreshMenu(deviceData = ds[i])
             }
             checkBoxPrompt(R.string.display_only_this_model, isCheckedDefault = ds.size != allDs.size) { c ->
                 val dss = if (c) allDs.filter { it.buildModel.equals(Build.MODEL, ignoreCase = true) }
                 else allDs
                 listItems(items = dss.map { it.buildModel }, waitForPositiveButton = false) { _, i, _ ->
-                    applyConfigAndRefreshMenu(dss[i])
+                    applyConfigAndRefreshMenu(deviceData = dss[i])
                 }
             }
-            positiveButton(R.string.edit) { editLocalConfig() }
             negativeButton(R.string.close)
         }
     }
 
-    private fun editLocalConfig() {
-        MaterialDialog(this).show {
-            title(R.string.edit_local_config)
-            listItemsMultiChoice(items = ApplicationState.savedConfigs.map { it.buildModel }, waitForPositiveButton = true) { _, indices, _ ->
-                val savedConfigs = ApplicationState.savedConfigs.toMutableList()
-                savedConfigs.removeAll(indices.map { savedConfigs[it] })
-                ApplicationState.savedConfigs = savedConfigs.toTypedArray()
-            }
-            positiveButton(R.string.delete_selected)
-            negativeButton()
+    private fun applyConfigAndRefreshMenu(config: Config = Config.INS, deviceData: Config.DeviceData? = null) {
+        if (deviceData != null) {
+            config.device = deviceData
         }
-    }
-
-    private fun applyConfigAndRefreshMenu(config: Config = Config.INS) {
         ApplicationState.applyConfig(config)
         refreshMenu()
     }
@@ -203,10 +165,11 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         menu_view.menu.findItem(R.id.show_battery_saver).isChecked = Config.INS.showBatterySaver
         menu_view.menu.findItem(R.id.hide_battery_aod).isChecked = Config.INS.hideBatteryAod
         pageAdapter.getItem(style_view_pager.currentItem).onResume()
-        styleButtons[Config.INS.energyType.ordinal].callOnClick()
+        styleButtons[Config.INS.device.energyType.ordinal].callOnClick()
     }
 
     private fun importFromClip(view: View) {
+        //TODO: load from file instead of clipboard
         val content = getSystemService(ClipboardManager::class.java)!!.primaryClip?.let {
             it.getItemAt(it.itemCount - 1).text
         }
@@ -231,9 +194,6 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
             Config.jsonDeserialize(content)
         }.onSuccess {
             applyConfigAndRefreshMenu(it)
-            if (save) {
-                saveConfig(it)
-            }
         }.onFailure {
             if (it is JsonSyntaxException) {
                 App.toast(R.string.import_config_hint, Toast.LENGTH_LONG)

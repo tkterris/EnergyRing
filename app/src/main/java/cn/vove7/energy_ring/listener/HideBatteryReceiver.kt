@@ -9,7 +9,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import cn.vove7.energy_ring.App
-import cn.vove7.energy_ring.service.AccService
 import cn.vove7.energy_ring.util.state.Config
 import cn.vove7.energy_ring.util.wm
 
@@ -32,7 +31,7 @@ object HideBatteryReceiver : EnergyRingBroadcastReceiver() {
     }
 
     private val view by lazy {
-        object : View(AccService.INS) {
+        object : View(App.INS) {
             init {
                 setBackgroundColor(Color.BLACK)
             }
