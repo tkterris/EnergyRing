@@ -15,12 +15,17 @@ import cn.vove7.energy_ring.util.wm
 object HideBatteryReceiver : EnergyRingBroadcastReceiver() {
 
     override fun start() {
-        val intentFilter: IntentFilter = IntentFilter().apply {
+        val showIntentFilter: IntentFilter = IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_OFF)
+            priority = -1
+        }
+        App.INS.registerReceiver(this, showIntentFilter)
+        val hideIntentFilter: IntentFilter = IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_ON)
             addAction(Intent.ACTION_USER_PRESENT)
+            priority = 1
         }
-        App.INS.registerReceiver(this, intentFilter)
+        App.INS.registerReceiver(this, hideIntentFilter)
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
