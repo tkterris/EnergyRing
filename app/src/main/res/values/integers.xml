@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="max_discharging_rotate_speed">30</integer>
+    <integer name="min_discharging_rotate_speed">0</integer>
+    <integer name="max_charging_rotate_speed">180</integer>
+    <integer name="min_charging_rotate_speed">30</integer>
+</resources>

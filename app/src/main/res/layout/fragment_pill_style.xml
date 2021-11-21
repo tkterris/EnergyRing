@@ -65,8 +65,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            app:max="8"
-            app:min="0"
+            app:max="@integer/max_discharging_rotate_speed"
+            app:min="@integer/min_discharging_rotate_speed"
             app:title="@string/discharge_rotate_speed" />
 
         <cn.vove7.energy_ring.ui.view.AccurateSeekBar
@@ -74,8 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            app:max="180"
-            app:min="0"
+            app:max="@integer/max_charging_rotate_speed"
+            app:min="@integer/min_charging_rotate_speed"
             app:title="@string/charge_rotate_speed" />
 
         <com.google.android.material.card.MaterialCardView
