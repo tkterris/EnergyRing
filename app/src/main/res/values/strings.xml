@@ -23,7 +23,7 @@
     <string name="config_data">Configuration data</string>
     <string name="way_support">Support mode</string>
     <string name="hint_wx_donate">Please use wechat to scan code after screen capture</string>
-    <string name="request_float_window_permission">Please open the suspended window permission</string>
+    <string name="request_float_window_permission">Accessibility service required</string>
     <string name="author">Author</string>
     <string name="no_browser_available">No browser available</string>
     <string name="alipay_is_not_installed">Alipay is not installed.</string>
@@ -77,7 +77,7 @@
     <string name="flash_ring_hint1">When there is a new notice when the screen is turned off, the breathing light will flash 5 seconds later. Double click to light up the screen</string>
     <string name="about_msg">EnergyRing \n- Auto hide on fullscreen  (with the status bar) \n- Auto hide on horizontal-screen  \n- Charging animation \n- Screen-off notification reminder \n- not affected by resolution (2k / 1080p) \nIt will appear "freezing" at some times. Changing the attribute ring will not change. You can force refresh or switch shapes in the menu. \n[this app is free of charge]</string>
     <string name="pick_color">Pick color</string>
-    <string name="enable_service">Enable Service</string>
+    <string name="enable_service">Enable Energy Ring Service</string>
     <string name="file_selection_fail">File request failed</string>
     <string name="parse_json_fail">Failed to parse JSON</string>
     <string name="screenoff_reminder_hint">Screen-off Reminder\n It\'s need to notification permission. When the breathing light flashes, double-click to light up the screen. \n When you double-click the bright screen, the face unlock may not work.</string>

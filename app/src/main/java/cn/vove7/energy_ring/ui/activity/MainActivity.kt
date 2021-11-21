@@ -8,9 +8,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.ActionMenuView
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.Toast
-import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.R
 import cn.vove7.energy_ring.model.ShapeType
 import cn.vove7.energy_ring.service.AccService
@@ -22,13 +22,8 @@ import cn.vove7.energy_ring.util.state.DevicePresets
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItems
-import com.afollestad.materialdialogs.list.listItemsMultiChoice
-import com.google.gson.JsonSyntaxException
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.*
-import java.net.URI
 
 const val CONFIG_JSON_CREATE = 1
 const val CONFIG_JSON_LOAD = 2
@@ -46,6 +41,8 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
 
         style_view_pager.adapter = pageAdapter
 
+        enable_service.isChecked = ApplicationState.enabled
+        enable_service.setOnClickListener(::enableServiceToggle)
         export_view.setOnClickListener(::storeToFile)
         import_view.setOnClickListener(::loadFromFile)
         initRadioStylesView()
@@ -57,10 +54,19 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         menu_view.overflowIcon = getDrawable(R.drawable.ic_settings)
 
         refreshMenu()
+    }
 
-        if (!AccService.enabled) {
-            openAccessibilityPermission()
+    override fun onResume() {
+        // Ensure ApplicationState.enabled matches rules that AccService has to be enabled
+        // and the user has the toggle checked
+        if (!AccService.enabled || !enable_service.isChecked) {
+            enable_service.isChecked = false
+            ApplicationState.enabled = false
+        } else {
+            ApplicationState.enabled = true
         }
+        applyConfigAndRefreshMenu()
+        super.onResume()
     }
 
     private fun initRadioStylesView() {
@@ -171,6 +177,16 @@ class MainActivity : BaseActivity(), ActionMenuView.OnMenuItemClickListener {
         menu_view.menu.findItem(R.id.hide_battery_aod).isChecked = Config.INS.hideBatteryAod
         pageAdapter.getItem(style_view_pager.currentItem).onResume()
         styleButtons[Config.INS.device.energyType.ordinal].callOnClick()
+    }
+
+    private fun enableServiceToggle(view: View) {
+        if (!AccService.enabled) {
+            openAccessibilityPermission()
+        } else {
+            ApplicationState.enabled = !ApplicationState.enabled
+            enable_service.isChecked = ApplicationState.enabled
+            applyConfigAndRefreshMenu()
+        }
     }
 
     private fun storeToFile(view: View) {

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import cn.vove7.energy_ring.App
 import cn.vove7.energy_ring.listener.BroadcastActions
+import cn.vove7.energy_ring.service.AccService
 import cn.vove7.energy_ring.util.sendEnergyBroadcast
 
 /**
@@ -15,14 +16,11 @@ import cn.vove7.energy_ring.util.sendEnergyBroadcast
  */
 object ApplicationState {
     var activeConfig: Config
-    //TODO: UI toggle for this
     var enabled: Boolean = true
 
     init {
         val sharedPreferences = sharedPreferences()
-        //TODO: swap lines once UI toggle is set up
-        enabled = sharedPreferences.getBoolean("enabled", true)
-        //enabled = sharedPreferences.getBoolean("enabled", false) && AccService.enabled
+        enabled = sharedPreferences.getBoolean("enabled", false) && AccService.enabled
         activeConfig = Config.jsonDeserialize(sharedPreferences.getString("activeConfig", getDefaultConfigSerialized())!!)
     }
 
