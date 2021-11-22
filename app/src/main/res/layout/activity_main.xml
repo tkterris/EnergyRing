@@ -74,7 +74,9 @@
                 android:id="@+id/enable_service"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginVertical="10dp"
                 android:text="@string/enable_service"
                 android:textStyle="bold" />
         </LinearLayout>
