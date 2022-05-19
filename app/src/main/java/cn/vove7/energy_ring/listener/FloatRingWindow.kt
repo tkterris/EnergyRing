@@ -42,10 +42,6 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
 
     private val displayEnergyStyle by displayEnergyStyleDelegate
 
-    var visible : Boolean get() = bodyView.visibility == View.VISIBLE
-        private set(value) {
-            bodyView.visibility = if (value) { View.VISIBLE } else { View.INVISIBLE }
-        }
     private val layoutParams: LayoutParams
         get() = LayoutParams(
                 -2, -2,
@@ -83,16 +79,18 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
 
     @Synchronized private fun handleUpdate(layoutChange : Boolean = false) {
         if (shouldBeVisible()) {
-            if (layoutChange || !visible) {
-                rebuildLayoutAndShow()
+            if (layoutChange || bodyView.visibility != View.VISIBLE) {
+                rebuildLayout()
             }
             updateAnimation()
+            bodyView.visibility = View.VISIBLE
         } else {
-            hide()
+            bodyView.visibility = View.INVISIBLE
+            hideAnimation()
         }
     }
 
-    private fun rebuildLayoutAndShow() {
+    private fun rebuildLayout() {
         Log.d("FloatRingWindow","Refreshing layout")
         try {
             wm.removeViewImmediate(bodyView)
@@ -111,7 +109,6 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
         wm.addView(bodyView, layoutParams)
 
         bodyView.requestLayout()
-        visible = true
     }
 
     private fun updateAnimation() {
@@ -123,11 +120,7 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
         }
     }
 
-    private fun hide() {
-        if (!visible) {
-            return
-        }
-        visible = false
+    private fun hideAnimation() {
         displayEnergyStyle.onHide()
     }
 

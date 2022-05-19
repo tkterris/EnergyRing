@@ -35,10 +35,6 @@ abstract class RotateAnimatorSupporter : EnergyStyle {
 
     @CallSuper
     override fun reloadAnimation() {
-        if (!FloatRingWindow.visible) {
-            rotateAnimator.cancel()
-            return
-        }
 
         val rotationSpeed = Config.INS.rotationSpeed
 
