@@ -78,21 +78,21 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d("FloatRingWindow","Broadcast received : " + intent?.action)
-        update(layoutChange = intent?.action.equals(BroadcastActions.DISPLAY_REFRESH))
+        handleUpdate(layoutChange = intent?.action.equals(BroadcastActions.DISPLAY_REFRESH))
     }
 
-    @Synchronized private fun update(layoutChange : Boolean = false) {
-        if (layoutChange) {
-            refreshLayout()
-        }
-        if (canShow()) {
-            show()
+    @Synchronized private fun handleUpdate(layoutChange : Boolean = false) {
+        if (shouldBeVisible()) {
+            if (layoutChange || !visible) {
+                rebuildLayoutAndShow()
+            }
+            updateAnimation()
         } else {
             hide()
         }
     }
 
-    private fun refreshLayout() {
+    private fun rebuildLayoutAndShow() {
         Log.d("FloatRingWindow","Refreshing layout")
         try {
             wm.removeViewImmediate(bodyView)
@@ -111,11 +111,11 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
         wm.addView(bodyView, layoutParams)
 
         bodyView.requestLayout()
+        visible = true
     }
 
-    private fun show() {
+    private fun updateAnimation() {
         try {
-            visible = true
             displayEnergyStyle.update(PowerEventReceiver.batteryLevel)
             displayEnergyStyle.reloadAnimation()
         } catch (e: Exception) {
@@ -131,7 +131,7 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
         displayEnergyStyle.onHide()
     }
 
-    private fun canShow(): Boolean {
+    private fun shouldBeVisible(): Boolean {
         val cond1 = Config.INS.showRotated || !RotationListener.isRotated
         val cond3 = Config.INS.showBatterySaver || !PowerEventReceiver.powerSaveMode
         val cond4 = Config.INS.showScreenOff || ScreenListener.screenOn
@@ -140,7 +140,7 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
         val serviceRunning = AccService.running
         val enabled = ApplicationState.enabled
 
-        Log.d("Debug :", "canShow  ----> 旋转: $cond1 省电: $cond3 screen on: $cond4 " +
+        Log.d("Debug :", "shouldBeVisible  ----> 旋转: $cond1 省电: $cond3 screen on: $cond4 " +
                 "transparent: $fullyTransparent service: $serviceRunning enabled : $enabled")
 
         return cond1 && cond3 && cond4 && !fullyTransparent && serviceRunning && enabled
