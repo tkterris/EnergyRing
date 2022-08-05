@@ -92,6 +92,7 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
 
     private fun rebuildLayout() {
         Log.d("FloatRingWindow","Refreshing layout")
+        updateAnimation()
         try {
             wm.removeViewImmediate(bodyView)
         } catch (e: Exception) {
@@ -116,7 +117,7 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
             displayEnergyStyle.update(PowerEventReceiver.batteryLevel)
             displayEnergyStyle.reloadAnimation()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.w("FloatRingWindow", "Exception when updating animation", e)
         }
     }
 
