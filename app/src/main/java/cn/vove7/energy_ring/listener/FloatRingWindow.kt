@@ -51,7 +51,8 @@ object FloatRingWindow : EnergyRingBroadcastReceiver() {
                         LayoutParams.FLAG_NOT_FOCUSABLE or
                         LayoutParams.FLAG_LAYOUT_IN_SCREEN or
                         LayoutParams.FLAG_LAYOUT_INSET_DECOR or
-                        LayoutParams.FLAG_NOT_TOUCHABLE, 0
+                        LayoutParams.FLAG_NOT_TOUCHABLE or
+                        LayoutParams.FLAG_LAYOUT_NO_LIMITS, 0
         ).apply {
             format = PixelFormat.RGBA_8888
             gravity = Gravity.TOP or Gravity.START
